@@ -16,4 +16,14 @@ async function createAnnouncement(announcementData) {
     return result.rows[0];
 }
 
-module.exports = { createAnnouncement };
+// Récupération des annonces
+async function getAnnouncements() {
+    const result = await db.query(
+         `SELECT *
+         FROM announcements`
+    );
+
+    return result.rows;
+}
+
+module.exports = { createAnnouncement, getAnnouncements };
