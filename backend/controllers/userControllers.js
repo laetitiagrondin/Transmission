@@ -7,7 +7,7 @@ async function createUser(userData) {
 
     const result = await db.query(
         `INSERT INTO users (firstName, lastName, email, password)
-         VALUES ($1, $2? $3, $4)
+         VALUES ($1, $2, $3, $4)
          RETURNING *`,
         [firstName, lastName, email, password]
     );
@@ -15,4 +15,16 @@ async function createUser(userData) {
     return result.rows[0];
 }
 
-module.exports = { createUser };
+// Récupération d'un utilisateur
+async function getUserById(id) {
+    const result = await db.query(
+        `SELECT *
+         FROM users
+         WHERE id = $1`,
+         [id]
+    );
+
+    return result.rows[0];
+}
+
+module.exports = { createUser, getUserById };
