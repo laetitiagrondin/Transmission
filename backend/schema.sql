@@ -13,5 +13,5 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255) NOT NULL,
 
     -- Date de création du compte
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
