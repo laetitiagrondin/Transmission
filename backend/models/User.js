@@ -25,6 +25,24 @@ class User {
 
         return new User(user.id, user.firstName, user.lastName, user.email, user.password, user.createdAt);
     }
+
+    // Récupération du compte lors de la connexion
+    static async findByEmail(email) {
+        const result = await db.query(
+            `SELECT id, "firstName", "lastName", email, password, "createdAt"
+             FROM users
+             WHERE email = $1`,
+             [email]
+        );
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const user = result.rows[0];
+
+        return new User(user.id, user.firstName, user.lastName, user.email, user.password, user.createdAt);
+    }
 }
 
 module.exports = User;
