@@ -3,6 +3,9 @@ CREATE TABLE IF NOT EXISTS users (
     -- Identifiant unique de l'utilisateur
     id SERIAL PRIMARY KEY,
 
+    -- Prénom de l'utilisateur
+    "firstName" VARCHAR(100) NOT NULL,
+
     -- Nom de l'utilisateur
     "lastName" VARCHAR(100) NOT NULL,
 
