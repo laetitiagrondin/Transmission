@@ -43,6 +43,24 @@ class User {
 
         return new User(user.id, user.firstName, user.lastName, user.email, user.password, user.createdAt);
     }
+
+    // Récupération du compte de l'utilisateur connecté
+    static async findById(id) {
+        const result = await db.query(
+            `SELECT id, "firstName", "lastName", email, password, "createdAt"
+             FROM users
+             WHERE id = $1`,
+             [id]
+        );
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const user = result.rows[0];
+
+        return new User(user.id, user.firstName, user.lastName, user.email, user.password, user.createdAt);
+    }
 }
 
 module.exports = User;
