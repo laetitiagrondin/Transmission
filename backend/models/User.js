@@ -61,6 +61,25 @@ class User {
 
         return new User(user.id, user.firstName, user.lastName, user.email, user.password, user.createdAt);
     }
+
+    // Modification du profil de l'utilisateur connecté
+    static async update(id, firstName, lastName, email) {
+        const result = await db.query(
+            `UPDATE users
+             SET "firstName" = $1, "lastName" = $2, email = $3
+             WHERE id = $4
+             RETURNING id, "firstName", "lastName", email, password, "createdAt"`,
+             [firstName, lastName, email, id]
+        );
+
+        if (result.rows.length === 0) {
+            return null;
+        }
+
+        const user = result.rows[0];
+
+        return new User(user.id, user.firstName, user.lastName, user.email, user.password, user.createdAt);
+    }
 }
 
 module.exports = User;
