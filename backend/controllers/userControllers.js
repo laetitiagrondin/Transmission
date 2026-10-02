@@ -71,4 +71,4 @@ async function getUserById(id) {
     return result.rows[0];
 }
 
-module.exports = { createUser, getUserById };
+module.exports = { createUser, registerUser, getUserById };
