@@ -42,6 +42,15 @@ async function registerUser(req, res) {
 
     // Création du compte
     const user = await User.create(firstName, lastName, email, hashedPassword);
+
+    // Réponse de l'inscription
+    res.status(201).json({
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        createdAt: user.createdAt
+    });
 }
 
 // Récupération d'un utilisateur
