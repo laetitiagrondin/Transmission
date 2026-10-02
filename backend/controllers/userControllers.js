@@ -21,6 +21,16 @@ async function createUser(userData) {
     return result.rows[0];
 }
 
+// Création d'un compte utilisateur
+async function registerUser(req, res) {
+    const { firstName, lastName, email, password } = req.body;
+
+    // Vérification des données obligatoires
+    if (!firstName || !lastName || !email || !password) {
+        return res.status(400).json({ message: "Tous les champs sont obligatoires. "});
+    }
+}
+
 // Récupération d'un utilisateur
 async function getUserById(id) {
     const result = await db.query(
