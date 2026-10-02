@@ -29,6 +29,13 @@ async function registerUser(req, res) {
     if (!firstName || !lastName || !email || !password) {
         return res.status(400).json({ message: "Tous les champs sont obligatoires. "});
     }
+
+    // Vérification de l'existence du compte
+    const existingUser = await User.findByEmail(email);
+
+    if (existingUser) {
+        return res.status(409).json({ message: "Un compte existe déjà avec cette adresse e-mail"});
+    }
 }
 
 // Récupération d'un utilisateur
