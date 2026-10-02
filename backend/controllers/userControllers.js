@@ -36,6 +36,9 @@ async function registerUser(req, res) {
     if (existingUser) {
         return res.status(409).json({ message: "Un compte existe déjà avec cette adresse e-mail"});
     }
+
+    // Hachage du mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
 }
 
 // Récupération d'un utilisateur
