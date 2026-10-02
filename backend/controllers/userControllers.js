@@ -1,6 +1,12 @@
 // Importation de la connexion à PostgreSQL
 const db = require("../database");
 
+// Importation du modèle User
+const User = require("../models/User");
+
+// Importation de bcrypt
+const bcrypt = require("bcrypt");
+
 // Création d'un utilisateur
 async function createUser(userData) {
     const { firstName, lastName, email, password } = userData;
