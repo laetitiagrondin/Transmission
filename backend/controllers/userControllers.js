@@ -23,34 +23,40 @@ async function createUser(userData) {
 
 // Création d'un compte utilisateur
 async function registerUser(req, res) {
-    const { firstName, lastName, email, password } = req.body;
+    try {
+        const { firstName, lastName, email, password } = req.body;
 
-    // Vérification des données obligatoires
-    if (!firstName || !lastName || !email || !password) {
-        return res.status(400).json({ message: "Tous les champs sont obligatoires. "});
+        // Vérification des données obligatoires
+        if (!firstName || !lastName || !email || !password) {
+            return res.status(400).json({ message: "Tous les champs sont obligatoires. "});
+        }
+
+        // Vérification de l'existence du compte
+        const existingUser = await User.findByEmail(email);
+
+        if (existingUser) {
+            return res.status(409).json({ message: "Un compte existe déjà avec cette adresse e-mail."});
+        }
+
+        // Hachage du mot de passe
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Création du compte
+        const user = await User.create(firstName, lastName, email, hashedPassword);
+
+        // Réponse de l'inscription
+        res.status(201).json({
+            id: user.id,
+            firstName: user.firstName,
+            lastName: user.lastName,
+            email: user.email,
+            createdAt: user.createdAt
+        });
+    } catch (error) {
+        console.log("Erreur lors de la création du compte :", error);
+
+        res.status(500).json({ message: "Erreur lors de la création du compte." })
     }
-
-    // Vérification de l'existence du compte
-    const existingUser = await User.findByEmail(email);
-
-    if (existingUser) {
-        return res.status(409).json({ message: "Un compte existe déjà avec cette adresse e-mail"});
-    }
-
-    // Hachage du mot de passe
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Création du compte
-    const user = await User.create(firstName, lastName, email, hashedPassword);
-
-    // Réponse de l'inscription
-    res.status(201).json({
-        id: user.id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        createdAt: user.createdAt
-    });
 }
 
 // Récupération d'un utilisateur
