@@ -39,6 +39,9 @@ async function registerUser(req, res) {
 
     // Hachage du mot de passe
     const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Création du compte
+    const user = await User.create(firstName, lastName, email, hashedPassword);
 }
 
 // Récupération d'un utilisateur
