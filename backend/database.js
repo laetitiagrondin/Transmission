@@ -1,3 +1,6 @@
+// Chargement des variables d'environnement
+require("dotenv").config();
+
 // Importation du module PostgreSQL
 const { Pool } = require("pg");
 
