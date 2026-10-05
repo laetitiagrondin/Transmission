@@ -15,7 +15,7 @@ class User {
     // Création d'un utilisateur
     static async create(firstName, lastName, email, password) {
         const result = await db.query(
-            `INSERT INTO users ("firstName, "lastName", email, password)
+            `INSERT INTO users ("firstName", "lastName", email, password)
              VALUES ($1, $2, $3, $4)
              RETURNING id, "firstName", "lastName", email, password, "createdAt"`,
             [firstName, lastName, email, password]
