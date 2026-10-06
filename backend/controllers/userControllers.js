@@ -7,6 +7,9 @@ const User = require("../models/User");
 // Importation de bcrypt
 const bcrypt = require("bcrypt");
 
+// Importation de jsonwebtoken
+const jwt = require("jsonwebtoken");
+
 // Création d'un utilisateur
 async function createUser(userData) {
     const { firstName, lastName, email, password } = userData;
@@ -24,9 +27,9 @@ async function createUser(userData) {
 // Création d'un compte utilisateur
 async function registerUser(req, res) {
     try {
+        // Vérification des données obligatoires
         const { firstName, lastName, email, password } = req.body;
 
-        // Vérification des données obligatoires
         if (!firstName || !lastName || !email || !password) {
             return res.status(400).json({ message: "Tous les champs sont obligatoires. "});
         }
@@ -59,6 +62,46 @@ async function registerUser(req, res) {
     }
 }
 
+// Connexion d'un utilisateur
+async function loginUser(req, res) {
+    try {
+        // Vérification des données obligatoires
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ message: "L'email et le mot de passe sont obligatoires." });
+        }
+
+        // Récupération du compte
+        const user = await User.findByEmail(email);
+
+        if (!user) {
+            return res.status(401).json({ message: "Email ou mot de passe incorrect." });
+        }
+
+        // Vérification du mot de passe
+        const passwordMatch = await bcrypt.compare(password, user.password);
+
+        if (!passwordMatch) {
+            return res.status(401).json({ message: "Email ou mot de passe incorrect."});
+        }
+
+        // Génération du token
+        const token = jwt.sign(
+            { id: user.id },
+            process.env.JWT_SECRET,
+            { expiresIn: "1h" });
+        
+        // Réponse de la connexion
+        res.status(200).json({ token });
+    } catch (error) {
+        console.error("Erreur lors de la connexion :", error);
+
+        // Gestion de l'erreur
+        res.status(500).json({ message: "Erreur lors de la connexion" });
+    }
+}
+
 // Récupération d'un utilisateur
 async function getUserById(id) {
     const result = await db.query(
@@ -71,4 +114,4 @@ async function getUserById(id) {
     return result.rows[0];
 }
 
-module.exports = { createUser, registerUser, getUserById };
+module.exports = { createUser, registerUser, getUserById, loginUser };
