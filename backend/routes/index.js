@@ -2,7 +2,7 @@
 const express = require("express");
 
 // Importation du contrôleur utilisateur
-const { registerUser } = require("../controllers/userControllers");
+const { registerUser, loginUser } = require("../controllers/userControllers");
 
 // Création du routeur
 const router = express.Router();
@@ -14,5 +14,8 @@ router.get("/", (req, res) => {
 
 // Route d'inscription
 router.post("/users", registerUser);
+
+// Route de connexion
+router.post("/users/login", loginUser);
 
 module.exports = router;
