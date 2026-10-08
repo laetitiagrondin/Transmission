@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 // Middleware d'authentification
 function authenticateToken(req, res, next) {
     // Récupération du token
-    const authHeader = req.header.authorization;
+    const authHeader = req.headers.authorization;
     const token = authHeader && authHeader.split(" ")[1];
 
     if (!token) {
