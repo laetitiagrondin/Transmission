@@ -6,7 +6,7 @@ async function createAnnouncement(announcementData) {
     const { userId, title, description, type, subject, location} = announcementData;
 
     const result = await db.query(
-        `INSERT INTO nanouncements
+        `INSERT INTO announcements
          (userId, title, description, type, subject, location)
          VALUES ($1, $2, $3, $4, $5, $6)
          RETURNING *`,
