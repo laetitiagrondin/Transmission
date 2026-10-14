@@ -2,7 +2,7 @@
 const express = require("express");
 
 // Importation du contrôleur utilisateur
-const { registerUser, loginUser } = require("../controllers/userControllers");
+const { registerUser, loginUser, getMyProfile } = require("../controllers/userControllers");
 
 // Importation du contrôleur des annonces
 const { createAnnouncementController, getAnnouncementsController } = require("../controllers/announcementController");
@@ -27,8 +27,11 @@ router.post("/users/login", loginUser);
 // Route de création d'une annonce
 router.post("/announcements", authenticateToken, createAnnouncementController);
 
-// Router de récupération d'une annonce
+// Route de récupération d'une annonce
 router.get("/announcements", authenticateToken, getAnnouncementsController);
+
+// Route de récupération du profil de l'utilisateur connecté
+router.get("/users/me", authenticateToken, getMyProfile);
 
 // Vérification de l'authentification
 router.get("/protected", authenticateToken, (req, res) => {
