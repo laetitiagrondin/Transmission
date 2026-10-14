@@ -1,7 +1,6 @@
 // Importation de la connexion à PostgreSQL
 const db = require("../database");
 
-<<<<<<< HEAD
 // Importation du modèle User
 const User = require("../models/User");
 
@@ -11,19 +10,13 @@ const bcrypt = require("bcrypt");
 // Importation de jsonwebtoken
 const jwt = require("jsonwebtoken");
 
-=======
->>>>>>> 17a087f (feat: création de la fonction utilisateur)
 // Création d'un utilisateur
 async function createUser(userData) {
     const { firstName, lastName, email, password } = userData;
 
     const result = await db.query(
         `INSERT INTO users (firstName, lastName, email, password)
-<<<<<<< HEAD
          VALUES ($1, $2, $3, $4)
-=======
-         VALUES ($1, $2? $3, $4)
->>>>>>> 17a087f (feat: création de la fonction utilisateur)
          RETURNING *`,
         [firstName, lastName, email, password]
     );
@@ -31,7 +24,6 @@ async function createUser(userData) {
     return result.rows[0];
 }
 
-<<<<<<< HEAD
 // Création d'un compte utilisateur
 async function registerUser(req, res) {
     try {
@@ -122,7 +114,26 @@ async function getUserById(id) {
     return result.rows[0];
 }
 
+// Récupération du profil de l'utilisateur connecté
+async function getMyProfile(req, res) {
+    try {
+        const result = await db.query(
+            ` SELECT id, "firstName", "lastName", email, "createdAt"
+             FROM users
+             WHERE id = $1`,
+            [req.user.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Utilisateur introuvable." });
+        }
+
+        return res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error("Erreur lors de la récupération du profil :", error);
+        
+        return res.status(500).json({ message: "Erreur lors de la récupération du profil" });
+    }
+}
+
 module.exports = { createUser, registerUser, getUserById, loginUser };
-=======
-module.exports = { createUser };
->>>>>>> 17a087f (feat: création de la fonction utilisateur)
