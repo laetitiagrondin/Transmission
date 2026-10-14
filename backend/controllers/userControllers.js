@@ -136,4 +136,4 @@ async function getMyProfile(req, res) {
     }
 }
 
-module.exports = { createUser, getUserById, getMyProfile, loginUser };
+module.exports = { createUser, registerUser, getUserById, getMyProfile, loginUser };
