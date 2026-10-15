@@ -136,4 +136,35 @@ async function getMyProfile(req, res) {
     }
 }
 
-module.exports = { createUser, registerUser, getUserById, getMyProfile, loginUser };
+// Modification du profil de l'utilisateur connecté
+async function updateMyProfile(req, res) {
+    try {
+        // Récupération des données du profil
+        const { firstName, lastName, email } = req.body;
+
+        if (!firstName || !lastName || !email) {
+            return res.status(400).jeson({ message: "Tous les champs sont obligatoires." });
+        }
+
+        // Modification du profil
+        const result = await db.query(
+            `UPDATE users
+             SET "firstName" = $1, "lastName" = $2, email = $3
+             WHERE id = $4
+             RETURNING id, "firstName", "lastName", email, "createdAt"`,
+             [firstName, lastName, email, req.user.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "Utilisateur introuvable." });
+        }
+
+        return res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error("Erreur lors de la modification du profil :", error);
+
+        return res.status(500).json({ message: "Erreur lors de la modification du profil." });
+    }
+}
+
+module.exports = { createUser, registerUser, getUserById, getMyProfile, updateMyProfile, loginUser };
