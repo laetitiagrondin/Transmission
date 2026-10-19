@@ -82,7 +82,7 @@ function App() {
 
             // Enregistrement du token
             if (!data.token) {
-                setMessage("Connexion réussie, mais aucun token n'a été reçue.");
+                setMessage("Connexion réussie, mais aucun token n'a été reçu.");
                 return;
             }
 
@@ -126,6 +126,14 @@ function App() {
         } finally {
             setIsProfileLoading(false);
         }
+    }
+
+    // Déconnexion de l'utilisateur
+    function handleLogout() {
+        localStorage.removeItem("token");
+        setToken("");
+        setIsLogin(true);
+        setMessage("Vous êtes déconnecté(e).");
     }
 
     return (
@@ -203,7 +211,7 @@ function App() {
                                 value={password}
                                 onChange={(event) => setPassword(event.target.value)}
                                 required />
-                        
+                    
                             <button type="submit" disabled={isLoading}>
                                 {isLoading ? "Inscription en cours..." : "Créer mon compte"}
                             </button>
@@ -243,6 +251,14 @@ function App() {
                             <p>Adresse e-mail : {profile.email}</p>
                         </div>
                     )}
+                </section>
+            )}
+
+            {token && (
+                <section className="auth-card">
+                    <h2>Vous êtes connecté(e).</h2>
+
+                    <button type="button" onClick={handleLogout}>Se déconnecter</button>
 
                     {message && <p className="form-message" role="status">{message}</p>}
                 </section>
