@@ -17,6 +17,10 @@ function App() {
     // Déclaration de la variable du token
     const [token, setToken] = useState(localStorage.getItem("token") || "");
 
+    // Déclaration des variables du profil
+    const [profile, setProfile] = useState(null);
+    const [isProfileLoading, setIsProfileLoading] = useState(false);
+
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
         event.preventDefault();
@@ -96,99 +100,153 @@ function App() {
         }
     }
 
+    // Récupération du profil connecté
+    async function handleGetProfile() {
+        setMessage("");
+        setIsProfileLoading(true);
+
+        try {
+            const response = await fetch("http://localhost:3000/api/users/me", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "Impossible de récuoérer le profil.");
+                return;
+            }
+
+            setProfile(data);
+        } catch (error) {
+            console.error("Erreur lors de la récupération du profil :", error);
+            setMessage(`Impossible de contacter le serveur : ${error.message}`);
+        } finally {
+            setIsProfileLoading(false);
+        }
+    }
+
     return (
         <main className="auth-container">
             <h1>Transmission</h1>
 
-            <section className="auth-card">
-                <h2>{isLogin ? "Se connecter" : "Créer un compte"}</h2>
-                <p>{isLogin ? "Connectez-vous pour accéder à Transmission." :
-                    "Inscrivez-vous pour échanger vos savoir-faire."}</p>
+            {!token && (
+                <section className="auth-card">
+                    <h2>{isLogin ? "Se connecter" : "Créer un compte"}</h2>
+                    <p>{isLogin ? "Connectez-vous pour accéder à Transmission." :
+                        "Inscrivez-vous pour échanger vos savoir-faire."}</p>
 
-                {isLogin ? (
-                    <form onSubmit={handleLogin}>
-                        <label htmlFor="loginEmail">Adresse e-mail</label>
-                        <input
-                            id="loginEmail"
-                            name="email"
-                            type="email"
-                            autoComplete="email"
-                            value={loginEmail}
-                            onChange={(event) => setLoginEmail(event.target.value)}
-                            required />
+                    {isLogin ? (
+                        <form onSubmit={handleLogin}>
+                            <label htmlFor="loginEmail">Adresse e-mail</label>
+                            <input
+                                id="loginEmail"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                value={loginEmail}
+                                onChange={(event) => setLoginEmail(event.target.value)}
+                                required />
 
-                        <label htmlFor="loginPassword">Mot de passe</label>
-                        <input
-                            id="loginPassword"
-                            name="password"
-                            type="password"
-                            autoComplete="current-password"
-                            value={loginPassword}
-                            onChange={(event) => setLoginPassword(event.target.value)}
-                            required />
+                            <label htmlFor="loginPassword">Mot de passe</label>
+                            <input
+                                id="loginPassword"
+                                name="password"
+                                type="password"
+                                autoComplete="current-password"
+                                value={loginPassword}
+                                onChange={(event) => setLoginPassword(event.target.value)}
+                                required />
+                        
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? "Connexion en cours..." : "Se connecter"}
+                            </button>
+                        </form>
+                    ) : (
+                        <form onSubmit={handleRegister}>
+                            <label htmlFor="firstName">Prénom</label>
+                            <input
+                                id="firstName"
+                                name="firstName"
+                                autoComplete="given-name"
+                                value={firstName}
+                                onChange={(event) => setFirstName(event.target.value)}
+                                required />
+                    
+                            <label htmlFor="lastName">Nom</label>
+                            <input
+                                id="lastName"
+                                name="lastName"
+                                autoComplete="family-name"
+                                value={lastName}
+                                onChange={(event) => setLastName(event.target.value)}
+                                required />
+                        
+                            <label htmlFor="email">Adresse e-mail</label>
+                            <input
+                                id="email"
+                                name="email"
+                                type="email"
+                                autoComplete="email"
+                                value={email}
+                                onChange={(event) => setEmail(event.target.value)}
+                                required />
+                    
+                            <label htmlFor="password">Mot de passe</label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                autoComplete="new-password"
+                                value={password}
+                                onChange={(event) => setPassword(event.target.value)}
+                                required />
+                        
+                            <button type="submit" disabled={isLoading}>
+                                {isLoading ? "Inscription en cours..." : "Créer mon compte"}
+                            </button>
+                        </form>
+                    )}
 
-                        <button type="submit" disabled={isLoading}>
-                            {isLoading ? "Connexion en cours..." : "Se connecter"}
+                    <p>{isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"} {" "}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                setIsLogin(!isLogin);
+                                setMessage("");
+                            }}>
+                            {isLogin ? "Créer un compte" : "Se connecter"}
                         </button>
-                    </form>
-                ) : (
-                    <form onSubmit={handleRegister}>
-                        <label htmlFor="firstName">Prénom</label>
-                        <input
-                            id="firstName"
-                            name="firstName"
-                            autoComplete="given-name"
-                            value={firstName}
-                            onChange={(event) => setFirstName(event.target.value)}
-                            required />
-                    
-                        <label htmlFor="lastName">Nom</label>
-                        <input
-                            id="lastName"
-                            name="lastName"
-                            autoComplete="family-name"
-                            value={lastName}
-                            onChange={(event) => setLastName(event.target.value)}
-                            required />
-                    
-                        <label htmlFor="email">Adresse e-mail</label>
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            autoComplete="email"
-                            value={email}
-                            onChange={(event) => setEmail(event.target.value)}
-                            required />
-                    
-                        <label htmlFor="password">Mot de passe</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            autoComplete="new-password"
-                            value={password}
-                            onChange={(event) => setPassword(event.target.value)}
-                            required />
-                    
-                        <button type="submit" disabled={isLoading}>
-                            {isLoading ? "Inscription en cours..." : "Créer mon compte"}
-                        </button>
-                    </form>
-                )}
+                    </p>
 
-                <p>{isLogin ? "Pas encore de compte ?" : "Déjà un compte ?"} {" "}
-                    <button type="button"
-                        onClick={() => {
-                            setIsLogin(!isLogin);
-                            setMessage("");
-                        }}>
-                        {isLogin ? "Créer un compte" : "Se connecter"}
+                    {message && <p className="form-message" role="status">{message}</p>}
+                </section>
+            )}
+
+            {token && (
+                <section className="auth-card">
+                    <h2>Mon profil</h2>
+
+                    <button
+                        type="button"
+                        onClick={handleGetProfile}
+                        disabled={isProfileLoading}>
+                        {isProfileLoading ? "Chargement..." : "Afficher mon profil"}
                     </button>
-                </p>
 
-                {message && <p className="form-message" role="status">{message}</p>}
-            </section>
+                    {profile && (
+                        <div>
+                            <p>Prénom : {profile.firstName}</p>
+                            <p>Nom : {profile.lastName}</p>
+                            <p>Adresse e-mail : {profile.email}</p>
+                        </div>
+                    )}
+
+                    {message && <p className="form-message" role="status">{message}</p>}
+                </section>
+            )}
         </main>
     );
 }
