@@ -1,3 +1,4 @@
+// Importation des hooks React
 import { useState } from "react";
 
 // Création des formulaires d'authentification
@@ -12,6 +13,9 @@ function App() {
     const [isLogin, setIsLogin] = useState(false);
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
+
+    // Déclaration de la variable du token
+    const [token, setToken] = useState(localStorage.getItem("token") || "");
 
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
@@ -34,6 +38,7 @@ function App() {
                 return;
             }
 
+            // Réinitialisation du formulaire après l'inscription
             setMessage("Inscription réussie. Vous pouvez vous connecter.");
             setFirstName("");
             setLastName("");
@@ -70,6 +75,15 @@ function App() {
                 setMessage(data.message || "La connexion a échoué.");
                 return;
             }
+
+            // Enregistrement du token
+            if (!data.token) {
+                setMessage("Connexion réussie, mais aucun token n'a été reçu.");
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            setToken(data.token);
 
             // Affichage du résultat de la connexion
             setMessage("Connexion réussie.");
