@@ -14,6 +14,9 @@ function App() {
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
 
+    // Déclaration de la variable du token
+    const [token, setToken] = useState(localStorage.getItem("token") || "");
+
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
         event.preventDefault();
@@ -72,6 +75,15 @@ function App() {
                 setMessage(data.message || "La connexion a échoué.");
                 return;
             }
+
+            // Enregistrement du token
+            if (!data.token) {
+                setMessage("Connexion réussie, mais aucun token n'a été reçue.");
+                return;
+            }
+
+            localStorage.setItem("token", data.token);
+            setToken(data.token);
 
             // Affichage du résultat de la connexion
             setMessage("Connexion réussie.");
