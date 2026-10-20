@@ -21,6 +21,12 @@ function App() {
     const [profile, setProfile] = useState(null);
     const [isProfileLoading, setIsProfileLoading] = useState(false);
 
+    // Déclaration des variables de modification du profil
+    const [editFirstName, setEditFirstName] = useState("");
+    const [editLastName, setEditLastName] = useState("");
+    const [editEmail, setEditEmail] = useState("");
+    const [isProfileEditing, setIsProfileEditing] = useState(false);
+
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
         event.preventDefault();
@@ -120,11 +126,52 @@ function App() {
             }
 
             setProfile(data);
+            setEditFirstName(data.firstName);
+            setEditLastName(data.lastName);
+            setEditEmail(data.email);
         } catch (error) {
             console.error("Erreur lors de la récupération du profil :", error);
             setMessage(`Impossible de contacter le serveur : ${error.message}`);
         } finally {
             setIsProfileLoading(false);
+        }
+    }
+
+    // Modification du profil connecté
+    async function handleUpdateProfile() {
+        setMessage("");
+
+        try {
+            const response = await fetch("http://localhost:3000/api/users/me", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    firstName: editFirstName,
+                    lastName: editLastName,
+                    email: editEmail
+                })
+            });
+
+            const data = await response.json();
+            console.log("Statut :", response.status);
+            console.log("Réponse du serveur :", data);
+
+            if (!response.ok) {
+                setMessage(data.message || "La modification du profil a échoué.");
+                return;
+            }
+
+            setProfile(data);
+            setEditFirstName(data.FirstName);
+            setEditLastName(data.lastName);
+            setIsProfileEditing(false);
+            setMessage("Profil modifié avec succès.");
+        } catch (error) {
+            console.error("Erreur lors de la modification du profil :", error);
+            setMessage("Impossible de contacter le serveur.");
         }
     }
 
@@ -238,9 +285,53 @@ function App() {
 
                     {profile && (
                         <div>
-                            <p>Prénom : {profile.firstName}</p>
-                            <p>Nom : {profile.lastName}</p>
-                            <p>Adresse e-mail : {profile.email}</p>
+                            {!isProfileEditing ? (
+                                <div>
+                                    <p>Prénom : {profile.firstName}</p>
+                                    <p>Nom : {profile.lastName}</p>
+                                    <p>Adresse e-mail : {profile.email}</p>
+
+                                    <button type="button" onClick={() => setIsProfileEditing(true)}>Modifier mon profil</button>
+                                </div>
+                            ) : (
+                                <div>
+                                    <label htmlFor="editFirstName">Prénom</label>
+                                    <input
+                                        id="editFirstName"
+                                        type="text"
+                                        value={editFirstName}
+                                        onChange={(event) => setEditFirstName(event.target.value)}
+                                        required />
+                                    
+                                    <label htmlFor="editLastName">Nom</label>
+                                    <input
+                                        id="editLastName"
+                                        type="text"
+                                        value={editLastName}
+                                        onChange={(event) => setEditLastName(event.target.value)}
+                                        required/>
+
+                                    <label htmlFor="editEmail">Adresse e-mail</label>
+                                    <input
+                                        id="editEmail"
+                                        type="email"
+                                        value={editEmail}
+                                        onChange={(event) => setEditEmail(event.target.value)}
+                                        required/>
+
+                                    <button type="button" onClick={handleUpdateProfile}>Enregistrer les modifications</button>
+
+                                    <button
+                                        type="button"
+                                        onClick={() => {
+                                            setEditFirstName(profile.firstName);
+                                            setEditLastName(profile.lastName);
+                                            setEditEmail(profile.email);
+                                            setIsProfileEditing(false);
+                                        }}>Annuler
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     )}
 
