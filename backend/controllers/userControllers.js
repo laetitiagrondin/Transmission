@@ -143,7 +143,7 @@ async function updateMyProfile(req, res) {
         const { firstName, lastName, email } = req.body;
 
         if (!firstName || !lastName || !email) {
-            return res.status(400).jeson({ message: "Tous les champs sont obligatoires." });
+            return res.status(400).json({ message: "Tous les champs sont obligatoires." });
         }
 
         // Modification du profil
