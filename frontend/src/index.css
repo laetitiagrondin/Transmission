@@ -1,0 +1,81 @@
+.announcements-container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.announcements-container h1 {
+    margin: 0;
+    color: #6941a5;
+    font-size: 2.4rem;
+    text-align: center;
+}
+
+.announcements-container > h2 {
+    margin: 8px 0 28px;
+    color: #6b6375;
+    text-align: center;
+}
+
+.announcement-card {
+    margin-bottom: 24px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #dddddd;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
+}
+
+.announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.announcement-form input,
+.announcement-form textarea,
+.announcement-form select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font: inherit;
+}
+
+.announcement-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.announcement-form input:focus,
+.announcement-form textarea:focus,
+.announcement-form select:focus {
+    outline: 2px solid #aa3bff;
+    outline-offset: 1px;
+}
+
+.announcements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.announcements-list > button {
+    align-self: flex-start;
+}
+
+.announcement-message {
+    margin-top: 20px;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 480px) {
+    .announcements-container {
+        padding: 28px 16px;
+    }
+
+    .announcement-card {
+        padding: 20px;
+    }
+}
