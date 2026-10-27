@@ -20,6 +20,7 @@ function authenticateToken(req, res, next) {
 
         next();
     } catch (error) {
+        console.error("Erreur JWT :", error.name, error.message);
         return res.status(403).json({ message: "Token invalide." });
     }
 }

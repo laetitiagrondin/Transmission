@@ -1,10 +1,18 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.jsx'
+// Importation de React
+import { StrictMode } from "react";
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+// Importation du moteur de rendu React
+import { createRoot } from "react-dom/client";
+
+// Importation du style global
+import "./index.css";
+
+// Importation du composant principal
+import App from "./App.jsx";
+
+// Affichage de l'application
+createRoot(document.getElementById("root")).render(
+    <StrictMode>
+        <App />
+    </StrictMode>
+);

@@ -22,27 +22,39 @@ body {
   min-height: 100vh;
 }
 
-.auth-container {
+.auth-container,
+.announcements-container {
   width: 100%;
-  max-width: 520px;
   margin: 0 auto;
   padding: 40px 24px;
 }
 
-.auth-container h1 {
+.auth-container {
+    max-width: 520px;
+}
+
+.announcements-container {
+    max-width: 800px;
+}
+
+.auth-container
+.announcements-container h1 {
   margin: 0;
-  color: 6941a5;
+  color: #6941a5;
   font-size: 2.4rem;
   text-align: center;
 }
 
-.subtitle {
+.subtitle,
+.announcements-container > h2 {
   margin: 8px 0 28px;
-  color: 6b6375;
+  color: #6b6375;
   text-align: center;
 }
 
-.auth-card {
+.auth-card
+.announcement-card {
+  margin-bottom: 24px;
   padding: 28px;
   background: #ffffff;
   border: 1px solid #e5e0ed;
@@ -72,7 +84,9 @@ label {
   font-weight: 600;
 }
 
-input {
+.announcement-form input
+.announcement-form textarea,
+.announcement-form select {
   width: 100%;
   padding: 12px;
   border: 1px solid #d8d2e2;
@@ -80,9 +94,22 @@ input {
   font: inherit;
 }
 
-input:focus {
-  outline: 2px solid #aa3bff;
-  outline-offset: 1px;
+.announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.announcement-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.announcement-form input:focus,
+.announcement-form textarea:focus,
+.announcement-form select:focus {
+    outline: 2px solid #aa3bff;
+    outline-offset: 1px;
 }
 
 button {
@@ -90,7 +117,7 @@ button {
   padding: 13px;
   border: none;
   border-radius: 8px;
-  background: 6941a5;
+  background: #6941a5;
   color: #ffffff;
   font: inherit;
   font-weight: 600;
@@ -102,17 +129,30 @@ button:disabled {
   opacity: 0.65;
 }
 
-.form-message {
+.form-message,
+.announcement-message {
   margin-top: 20px;
   overflow-wrap: anywhere;
 }
 
+.announcements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.announcements-list > button {
+    align-self: flex-start;
+}
+
 @media (max-width: 480px) {
-  .auth-container {
+  .auth-container,
+  .announcements-container {
     padding: 28px 16px;
   }
 
-  .auth-card {
+  .auth-card,
+  .announcement-card {
     padding: 20px;
   }
 }

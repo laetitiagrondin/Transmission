@@ -24,6 +24,18 @@ async function createUser(userData) {
     return result.rows[0];
 }
 
+// Récupération d'un utilisateur par son identifiant
+async function getUserById(id) {
+        const result = await db.query(
+            `SELECT *
+             FROM users
+             WHERE id = $1`,
+            [id]
+        );
+
+    return result.rows[0];
+}
+
 // Création d'un compte utilisateur
 async function registerUser(req, res) {
     try {
@@ -31,14 +43,14 @@ async function registerUser(req, res) {
         const { firstName, lastName, email, password } = req.body;
 
         if (!firstName || !lastName || !email || !password) {
-            return res.status(400).json({ message: "Tous les champs sont obligatoires. "});
+            return res.status(400).json({ message: "Tous les champs sont obligatoires." });
         }
 
         // Vérification de l'existence du compte
         const existingUser = await User.findByEmail(email);
 
         if (existingUser) {
-            return res.status(409).json({ message: "Un compte existe déjà avec cette adresse e-mail."});
+            return res.status(409).json({ message: "Un compte existe déjà avec cette adresse e-mail." });
         }
 
         // Hachage du mot de passe
@@ -48,7 +60,7 @@ async function registerUser(req, res) {
         const user = await User.create(firstName, lastName, email, hashedPassword);
 
         // Réponse de l'inscription
-        res.status(201).json({
+        return res.status(201).json({
             id: user.id,
             firstName: user.firstName,
             lastName: user.lastName,
@@ -56,9 +68,8 @@ async function registerUser(req, res) {
             createdAt: user.createdAt
         });
     } catch (error) {
-        console.log("Erreur lors de la création du compte :", error);
-
-        res.status(500).json({ message: "Erreur lors de la création du compte." })
+        console.error("Errur lors de la création du compte :", error);
+        return res.status(500).json({message: "Erreur lors de la création du compte." });
     }
 }
 
@@ -83,7 +94,7 @@ async function loginUser(req, res) {
         const passwordMatch = await bcrypt.compare(password, user.password);
 
         if (!passwordMatch) {
-            return res.status(401).json({ message: "Email ou mot de passe incorrect."});
+            return res.status(401).json({ message: "Email ou mot de passe incorrect." });
         }
 
         // Génération du token
@@ -91,27 +102,13 @@ async function loginUser(req, res) {
             { id: user.id },
             process.env.JWT_SECRET,
             { expiresIn: "1h" });
-        
-        // Réponse de la connexion
-        res.status(200).json({ token });
+
+        // Récupération de la connexion
+        return res.status(200).json({ token });
     } catch (error) {
         console.error("Erreur lors de la connexion :", error);
-
-        // Gestion de l'erreur
         res.status(500).json({ message: "Erreur lors de la connexion" });
     }
-}
-
-// Récupération d'un utilisateur
-async function getUserById(id) {
-    const result = await db.query(
-        `SELECT *
-         FROM users
-         WHERE id = $1`,
-         [id]
-    );
-
-    return result.rows[0];
 }
 
 // Récupération du profil de l'utilisateur connecté
@@ -131,7 +128,6 @@ async function getMyProfile(req, res) {
         return res.status(200).json(result.rows[0]);
     } catch (error) {
         console.error("Erreur lors de la récupération du profil :", error);
-        
         return res.status(500).json({ message: "Erreur lors de la récupération du profil" });
     }
 }
@@ -162,7 +158,6 @@ async function updateMyProfile(req, res) {
         return res.status(200).json(result.rows[0]);
     } catch (error) {
         console.error("Erreur lors de la modification du profil :", error);
-
         return res.status(500).json({ message: "Erreur lors de la modification du profil." });
     }
 }
