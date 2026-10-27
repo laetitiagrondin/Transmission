@@ -370,7 +370,7 @@ function App() {
 
                 <button
                     type="button"
-                    onCLick={handleGetProfile}
+                    onClick={handleGetProfile}
                     disabled={isProfileLoading}>
                     {isProfileLoading ? "Chargement..." : "Afficher mon profil"}
                 </button>
