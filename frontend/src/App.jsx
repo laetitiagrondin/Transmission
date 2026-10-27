@@ -1,5 +1,5 @@
 // Importation des hooks React
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 // Création de l'interface des annonces
 function App() {
@@ -115,11 +115,6 @@ function App() {
             setIsSubmitting(false);
         }
     }
-
-    // Chargement des annonces à l'ouverture de l'interface
-    useEffect(() => {
-        handleGetAnnouncements();
-    }, []);
 
     return (
         <main className="announcements-container">
