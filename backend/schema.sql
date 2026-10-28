@@ -45,3 +45,24 @@ CREATE TABLE IF NOT EXISTS announcements (
     -- Date de création de l'annonce
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Création de la table des demandes d'échange
+CREATE TABLE IF NOT EXISTS "exchangeRequests" (
+    -- Identifiant unique de la demande
+    id SERIAL PRIMARY KEY,
+
+    -- Identifiant de l'annonce concernée
+    "announcementId" INTEGER NOT NULL REFERENCES announcements(id) ON DELETE CASCADE,
+
+    -- Identifiant de l'utilisateur qui fait la demande
+    "requesterId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Message accompagnant la demande
+    message TEXT DEFAULT '',
+
+    -- Statut de la demande
+    status VARCHAR(50) NOT NULL DEFAULT 'en_attente',
+
+    -- Date de création de la demande
+    "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
