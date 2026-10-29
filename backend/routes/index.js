@@ -24,13 +24,13 @@ router.get("/", (req, res) => {
 // Route d'inscription
 router.post("/users", registerUser);
 
-// Route de connexion
+// Routes de connexion
 router.post("/users/login", loginUser);
 
 // Route de création d'une annonce
 router.post("/announcements", authenticateToken, createAnnouncementController);
 
-// Router de récupération d'une annonce
+// Router de récupération des annonces
 router.get("/announcements", authenticateToken, getAnnouncementsController);
 
 // Route de récupération du profil de l'utilisateur connecté
