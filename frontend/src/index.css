@@ -1,0 +1,153 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    color: #26352f;
+    background: #f2f5f1;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+.messaging-container {
+    width: min(760px, 92%);
+    margin: 0 auto;
+    padding: 40px 0;
+}
+
+.page-header {
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.page-header h1 {
+    margin-bottom: 8px;
+    color: #28634b;
+}
+
+.page-header p,
+.conversation-header p {
+    color: #68756d;
+}
+
+.messaging-card {
+    padding: 28px;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 18px rgb(0 0 0 / 8%);
+}
+
+.messaging-card h2 {
+    margin-top: 0;
+}
+
+.messaging-card form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.messaging-card input,
+.messaging-card textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5ce;
+    border-radius: 6px;
+}
+
+.messaging-card textarea {
+    resize: vertical;
+}
+
+.messaging-card button {
+    padding: 12px 16px;
+    border: 0;
+    border-radius: 6px;
+    color: white;
+    background: #28634b;
+    cursor: pointer;
+}
+
+.messaging-card button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.conversation-header,
+.recipient-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.conversation-header {
+    flex-wrap: wrap;
+}
+
+.conversation-header p {
+    margin-bottom: 0;
+}
+
+.messaging-card .secondary-button {
+    background: #68756d;
+}
+
+.recipient-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.message-item {
+    padding: 14px;
+    border-radius: 8px;
+    background: #eef5ef;
+    overflow-wrap: anywhere;
+}
+
+.message-item p {
+    margin-top: 0;
+    white-space: pre-wrap;
+}
+
+.message-item small {
+    display: block;
+    margin-top: 6px;
+    color: #68756d;
+}
+
+.status-message {
+    margin-top: 16px;
+    text-align: center;
+}
+
+@media (max-width: 520px) {
+    .messaging-container {
+        padding: 20px 0;
+    }
+
+    .messaging-card {
+        padding: 18px;
+    }
+
+    .recipient-row {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}
