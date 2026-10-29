@@ -22,44 +22,26 @@ body {
     min-height: 100vh;
 }
 
-.auth-container,
+button,
+input,
+textarea,
+select {
+    font: inherit;
+}
+
 .announcements-container
 .exchange-requests-container {
     width: 100%;
+    max-width: 800px;
     margin: 0 auto;
     padding: 40px 24px;
-}
-
-.auth-container {
-    max-width: 520px;
-}
-
-.announcements-container,
-.exchange-requests-container {
-    max-width: 800px;
-}
-
-.auth-container h1,
-.announcements-container h1,
-.exchange-requests-container h1 {
-    margin: 0;
-    color: #6941a5;
-    font-size: 2.4rem;
-    text-align: center;
-}
-
-.subtitle,
-.announcements-container > h2,
-.exchange-requests-container > h2 {
-    margin: 8px 0 28px;
-    color: #6b6375;
-    text-align: center;
 }
 
 .auth-card,
 .announcement-card,
 .exchange-request-card,
-.exchange-requests-card {
+.exchange-requests-card
+.messaging-card {
     margin-bottom: 24px;
     padding: 28px;
     background: #ffffff;
@@ -68,14 +50,27 @@ body {
     box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
 }
 
-.auth-card h2 {
-    margin: 0 0 8px;
+.announcements-container > h1 {
+    margin: 0;
+    color: #6941a5;
+    font-size: 2.4rem;
+    text-align: center;
+}
+
+.announcements-container > h2,
+.exchange-requests-container > h2 {
+    margin: 8px 0 28px;
+    color: #6b6375;
+    text-align: center;
+}
+
+.auth-card h2
+.messaging-card h2 {
+    margin-top: 0;
     color: #343047;
-    font-size: 1.5rem;
 }
 
 .auth-card > p {
-    margin-bottom: 24px;
     color: #6b6375;
 }
 
@@ -90,30 +85,41 @@ label {
     font-weight: 600;
 }
 
+.auth-card input,
 .announcement-form input,
 .announcement-form textarea,
-.announcement-form select {
+.announcement-form select,
+.exchange-request-card input,
+.exchange-request-card textarea,
+.messaging-card input,
+.messaging-card textarea {
     width: 100%;
     padding: 12px;
+    color: #343047;
+    background: #ffffff;
     border: 1px solid #d8d2e2;
     border-radius: 8px;
-    font: inherit;
 }
 
 .announcement-form {
-    display: flex;
-    flex-direction: column;
     gap: 12px;
 }
 
-.announcement-form textarea {
+.announcement-form textarea,
+.exchange-request-card textarea,
+.messaging-card textarea {
     min-height: 120px;
     resize: vertical;
 }
 
+.auth-card input:focus,
 .announcement-form input:focus,
 .announcement-form textarea:focus,
-.announcement-form select:focus {
+.announcement-form select:focus,
+.exchange-request-card input:focus,
+.exchange-request-card textarea:focus,
+.messaging-card input:focus,
+.messaging-card textarea:focus {
     outline: 2px solid #aa3bff;
     outline-offset: 1px;
 }
@@ -121,12 +127,11 @@ label {
 button {
     margin-top: 16px;
     padding: 13px;
+    color: #ffffff;
+    font-weight: 600;
+    background: #6941a5;
     border: none;
     border-radius: 8px;
-    background: #6941a5;
-    color: #ffffff;
-    font: inherit;
-    font-weight: 600;
     cursor: pointer;
 }
 
@@ -135,36 +140,118 @@ button:disabled {
     opacity: 0.65;
 }
 
-.form-message,
-.announcement-message,
-.exchange-request-message {
+.form-message {
     margin-top: 20px;
     overflow-wrap: anywhere;
 }
 
-.announcements-list,
+.announcements-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.announcements-list > button {
+    align-self: flex-start;
+}
+
+.announcement-card h3,
+.announcement-card h4,
+.exchange-request-card h3,
+.exchange-requests-card h4 {
+    overflow-wrap: anywhere;
+}
+
 .exchange-requests-list {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
-.announcements-list > button,
 .exchange-requests-list > button {
     align-self: flex-start;
 }
 
-@media (max-width: 480px) {
-    .auth-container,
+.messaging-container {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.messaging-card form {
+    margin-top: 20px;
+}
+
+.messaging-card button {
+    padding: 12px 16px;
+}
+
+.conversation-header,
+.recipient-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.conversation-header {
+    flex-wrap: wrap;
+}
+
+.conversation-header p {
+    margin-bottom: 0;
+    color: #6b6375;
+}
+
+.recipient-row input {
+    flex: 1;
+    min-width: 0;
+}
+
+.messages-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.message-item {
+    padding: 14px;
+    overflow-wrap: anywhere;
+    background: #eef5ef;
+    border: 1px solid #e5e0ed;
+    border-radius: 8px;
+}
+
+.message-item p {
+    margin-top: 0;
+    white-space: pre-wrap;
+}
+
+.message-item small {
+    display: block;
+    margin-top: 6px;
+    color: #68756d;
+}
+
+@media (max-width: 520px) {
     .announcements-container,
-    .exchange-requests-container {
+    .exchange-requests-container,
+    .messaging-container {
         padding: 28px 16px;
     }
 
     .auth-card,
     .announcement-card,
     .exchange-request-card,
-    .exchange-requests-card {
-        padding: 20px;
+    .exchange-requests-card 
+    .messaging-card {
+        padding: 18px;
+    }
+
+    .recipient-row {
+        align-items: stretch;
+        flex-direction: column;
     }
 }

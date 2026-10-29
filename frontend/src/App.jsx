@@ -39,6 +39,11 @@ function App() {
     const [requestMessage, setRequestMessage] = useState("");
     const [exchangeRequests, setExchangeRequests] = useState([]);
 
+    // Déclaration des variables de messages
+    const [recipientId, setRecipientId] = useState("");
+    const [content, setContent] = useState("");
+    const [messages, setMessages] = useState([]);
+
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
         event.preventDefault();
@@ -157,7 +162,6 @@ function App() {
 
             const data = await response.json();
 
-            // Gestion des erreurs de récupération
             if (!response.ok) {
                 setMessage(data.message || "Impossible de récupérer les demandes.");
                 return;
@@ -175,6 +179,84 @@ function App() {
         }
     }
 
+    // Récupération des messages échangés avec le destinataire
+    async function handleGetMessages(event) {
+        if (event) {
+            event.preventDefault();
+        }
+
+        if (!recipientId || Number(recipientId) <= 0) {
+            setMessage("Saisis un identifiant de destinataire valide.");
+            return;
+        }
+
+        setMessage("");
+        setIsLoading(true);
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/messages/${encodeURIComponent(recipientId)}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "Impossible de récupérer les messages.");
+                return;
+            }
+
+            setMessages(Array.isArray(data) ? data : []);
+            setMessage(data.length === 0 ? "Aucun message pour le moment." : "");
+        } catch (error) {
+            console.error("Erreur lors de la récupération des messages :", error);
+            setMessage("Impossible de contacter le serveur.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    // Envoi d'un message
+    async function handleSendMessage(event) {
+        event.preventDefault();
+
+        if (!recipientId || Number(recipientId) <= 0) {
+            setMessage("Saisis un identifiant de destinataire valide.");
+            return;
+        }
+
+        if (!content.trim()) {
+            setMessage("Écris un message avant de l'envoyer.");
+            return;
+        }
+
+        setMessage("");
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("http://localhost:3000/api/messages", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ recipientId: Number(recipientId), content: content.trim() })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "L'envoi du message a échoué.");
+                return;
+            }
+
+            setContent("");
+            await handleGetMessages();
+            setMessage("Message envoyé.");
+        } catch (error) {
+            console.error("Erreur lors de l'envoi du message :", error);
+            setMessage("Impossible de contacter le serveur.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     // Déconnexion de l'utilisateur
     function handleLogout() {
         localStorage.removeItem("token");
@@ -182,6 +264,9 @@ function App() {
         setProfile(null);
         setAnnouncements([]);
         setExchangeRequests([]);
+        setMessages([]);
+        setRecipientId("");
+        setContent("");
         setIsLogin(true);
         setMessage("Vous êtes déconnecté(e).");
     }
@@ -329,7 +414,7 @@ function App() {
             {!token && (
                 <section className="auth-card">
                     <h2>{isLogin ? "Se connecter" : "Créer un compte"}</h2>
-                    <p>{isLogin ? "Connecteé-vous pour accéder à Transmission." : "Inscrivez-vous pour échanger vos savoir-faire."}</p>
+                    <p>{isLogin ? "Connectez-vous pour accéder à Transmission." : "Inscrivez-vous pour échanger vos savoir-faire."}</p>
 
                     {isLogin ? (
                         <form onSubmit={handleLogin}>
@@ -353,9 +438,7 @@ function App() {
                                 onChange={(event) => setLoginPassword(event.target.value)}
                                 required />
 
-                            <button type="submit" disabled={isLoading}>
-                                {isLoading ? "Connexion en cours..." : "Se connecter"}
-                            </button>
+                            <button type="submit" disabled={isLoading}>{isLoading ? "Connexion en cours..." : "Se connecter"}</button>
                         </form>
                     ) : (
                         <form onSubmit={handleRegister}>
@@ -397,9 +480,7 @@ function App() {
                                 onChange={(event) => setPassword(event.target.value)}
                                 required />
                             
-                            <button type="submit" disabled={isLoading}>
-                                {isLoading ? "Inscription en cours..." : "Créer mon compte"}
-                            </button>
+                            <button type="submit" disabled={isLoading}>{isLoading ? "Inscription en cours..." : "Créer mon compte"}</button>
                         </form>
                     )}
 
@@ -421,47 +502,42 @@ function App() {
                     <section className="auth-card">
                         <h2>Mon profil</h2>
 
-                    <button
-                        type="button"
-                        onClick={handleGetProfile}
-                        disabled={isProfileLoading}>
-                        {isProfileLoading ? "Chargement..." : "Afficher mon profil"}
-                    </button>
+                        <button type="button" onClick={handleGetProfile} disabled={isProfileLoading}>{isProfileLoading ? "Chargement..." : "Afficher mon profil"}</button>
                 
-                    {profile && (
-                        <div>
-                            {!isProfileEditing ? (
-                                <div>
-                                    <p>Prénom : {profile.firstName}</p>
-                                    <p>Nom : {profile.lastName}</p>
-                                    <p>Adresse e-mail : {profile.email}</p>
-                                    <button type="button" onClick={() => setIsProfileEditing(true)}>Modifier mon profil</button>
-                                </div>
-                            ) : (
-                                <div>
-                                    <label htmlFor="editFirstName">Prénom</label>
-                                    <input
-                                        id="editFirstName"
-                                        type="text"
-                                        value={editFirstName}
-                                        onChange={(event) => setEditFirstName(event.target.value)}
-                                        required />
+                        {profile && (
+                            <div>
+                                {!isProfileEditing ? (
+                                    <div>
+                                        <p>Prénom : {profile.firstName}</p>
+                                        <p>Nom : {profile.lastName}</p>
+                                        <p>Adresse e-mail : {profile.email}</p>
+                                        <button type="button" onClick={() => setIsProfileEditing(true)}>Modifier mon profil</button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <label htmlFor="editFirstName">Prénom</label>
+                                        <input
+                                            id="editFirstName"
+                                            type="text"
+                                            value={editFirstName}
+                                            onChange={(event) => setEditFirstName(event.target.value)}
+                                            required />
 
-                                    <label htmlFor="editLastName">Nom</label>
-                                    <input
-                                        id="editLastName"
-                                        type="text"
-                                        value={editLastName}
-                                        onChange={(event) => setEditLastName(event.target.value)}
-                                        required/>
+                                        <label htmlFor="editLastName">Nom</label>
+                                        <input
+                                            id="editLastName"
+                                            type="text"
+                                            value={editLastName}
+                                            onChange={(event) => setEditLastName(event.target.value)}
+                                            required/>
 
-                                    <label htmlFor="editEmail">Adresse e-mail</label>
-                                    <input
-                                        id="editEmail"
-                                        type="email"
-                                        value={editEmail}
-                                        onChange={(event) => setEditEmail(event.target.value)}
-                                        required/>
+                                        <label htmlFor="editEmail">Adresse e-mail</label>
+                                        <input
+                                            id="editEmail"
+                                            type="email"
+                                            value={editEmail}
+                                            onChange={(event) => setEditEmail(event.target.value)}
+                                            required/>
 
                                     <button type="button" onClick={handleUpdateProfile}>Enregistrer les modifications</button>
 
@@ -600,6 +676,55 @@ function App() {
                                     </article>
                                 ))}
                             </div>
+                        </section>
+                    </section>
+
+                    <section className="messaging-container">
+                        <section className="messaging-card">
+                            <div className="conversation-header">
+                                <div>
+                                    <h2>Messagerie</h2>
+                                    <p>Connecté(e) à Transmission</p>
+                                </div>
+                            </div>
+
+                            <form onSubmit={handleGetMessages}>
+                                <label htmlFor="recipientId">Identifiant du destinataire</label>
+                                <div className="recipient-row">
+                                    <input
+                                        id="recipientId"
+                                        type="number"
+                                        min="1"
+                                        value={recipientId}
+                                        onChange={(event) => setRecipientId(event.target.value)}
+                                        required />
+
+                                    <button type="submit" disabled={isLoading}>Charger les messages</button>
+                                </div>
+                            </form>
+
+                            <section className="messages-list" aria-live="polite">
+                                {messages.map((item) => (
+                                    <article className="message-item" key={item.id}>
+                                        <p>{item.content}</p>
+                                        <small>De : {item.senderId} · À : {item.recipientId}</small>
+                                        <small>{item.createdAt ? new Date(item.createdAt).toLocaleString("fr-FR") : ""}</small>
+                                    </article>
+                                ))}
+                            </section>
+
+                            <form onSubmit={handleSendMessage}>
+                                <label htmlFor="content">Ton message</label>
+                                <textarea
+                                    id="content"
+                                    value={content}
+                                    onChange={(event) => setContent(event.target.value)}
+                                    placeholder="Écris ton message..."
+                                    rows="4"
+                                    required />
+
+                                <button type="submit" disabled={isLoading || !recipientId}>{isLoading ? "Envoi..." : "Envoyer le message"}</button>
+                            </form>
                         </section>
                     </section>
 
