@@ -1,0 +1,170 @@
+:root {
+    font-family: system-ui, "Segoe UI", sans-serif;
+    color: #343047;
+    background: #f7f4fb;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-width: 320px;
+    min-height: 100vh;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+.auth-container,
+.announcements-container,
+.exchange-requests-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.auth-container {
+    max-width: 520px;
+}
+
+.announcements-container,
+.exchange-requests-container {
+    max-width: 800px;
+}
+
+.auth-container h1,
+.announcements-container h1,
+.exchange-requests-container h1 {
+    margin: 0;
+    color: #6941a5;
+    font-size: 2.4rem;
+    text-align: center;
+}
+
+.subtitle,
+.announcements-container > h2,
+.exchange-requests-container > h2 {
+    margin: 8px 0 28px;
+    color: #6b6375;
+    text-align: center;
+}
+
+.auth-card,
+.announcement-card,
+.exchange-request-card,
+.exchange-requests-card {
+    margin-bottom: 24px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #e5e0ed;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
+}
+
+.auth-card h2 {
+    margin: 0 0 8px;
+    color: #343047;
+    font-size: 1.5rem;
+}
+
+.auth-card > p {
+    margin-bottom: 24px;
+    color: #6b6375;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+label {
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.announcement-form input,
+.announcement-form textarea,
+.announcement-form select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8d2e2;
+    border-radius: 8px;
+    font: inherit;
+}
+
+.announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.announcement-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.announcement-form input:focus,
+.announcement-form textarea:focus,
+.announcement-form select:focus {
+    outline: 2px solid #aa3bff;
+    outline-offset: 1px;
+}
+
+button {
+    margin-top: 16px;
+    padding: 13px;
+    border: none;
+    border-radius: 8px;
+    background: #6941a5;
+    color: #ffffff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+.form-message,
+.announcement-message,
+.exchange-request-message {
+    margin-top: 20px;
+    overflow-wrap: anywhere;
+}
+
+.announcements-list,
+.exchange-requests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.announcements-list > button,
+.exchange-requests-list > button {
+    align-self: flex-start;
+}
+
+@media (max-width: 480px) {
+    .auth-container,
+    .announcements-container,
+    .exchange-requests-container {
+        padding: 28px 16px;
+    }
+
+    .auth-card,
+    .announcement-card,
+    .exchange-request-card,
+    .exchange-requests-card {
+        padding: 20px;
+    }
+}
