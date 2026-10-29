@@ -10,6 +10,9 @@ const { createAnnouncementController, getAnnouncementsController } = require("..
 // Importation du contrôleur des demandes d'échange
 const { createExchangeRequest, getMyExchangeRequests } = require("../controllers/exchangeRequestController");
 
+// Importation du contrôleur des messages
+const { sendMessage, getMessages } = require("../controllers/messageController");
+
 // Importation du middleware d'authentification
 const authenticateToken = require("../middleware/authMiddleware");
 
@@ -50,4 +53,11 @@ router.post("/exchange-requests", authenticateToken, createExchangeRequest);
 // Route de récupération des demandes d'échange de l'utilisateur connecté
 router.get("/exchange-requests", authenticateToken, getMyExchangeRequests);
 
+// Route d'envoi d'un message
+router.post("/messages", authenticateToken, sendMessage);
+
+// Route de récupération des messages échangés avec un utilisateur
+router.get("/messages/:recipientId", authenticateToken, getMessages);
+
+// Exportation des routes
 module.exports = router;

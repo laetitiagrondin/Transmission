@@ -162,4 +162,4 @@ async function updateMyProfile(req, res) {
     }
 }
 
-module.exports = { createUser, registerUser, getUserById, getMyProfile, updateMyProfile, loginUser };
+module.exports = { createUser, getUserById, registerUser, loginUser, getMyProfile, updateMyProfile };
