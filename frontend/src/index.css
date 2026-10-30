@@ -41,7 +41,8 @@ select {
 .announcement-card,
 .exchange-request-card,
 .exchange-requests-card
-.messaging-card {
+.messaging-card
+.notifications-card {
     margin-bottom: 24px;
     padding: 28px;
     background: #ffffff;
@@ -235,18 +236,56 @@ button:disabled {
     color: #68756d;
 }
 
+.notifications-container {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.notifications-card h2 {
+    margin-top: 0;
+    color: #343047;
+}
+
+.notifications-card ul {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 0;
+    list-style: none;
+}
+
+.notifications-card li {
+    padding: 14px;
+    overflow-wrap: anywhere;
+    background: #eef5ef;
+    border: 1px solid #e5e0ed;
+    border-radius: 8px;
+}
+
+.notifications-card li p {
+    margin-top: 0;
+}
+
+.notifications-card button {
+    padding: 12px 16px;
+}
+
 @media (max-width: 520px) {
     .announcements-container,
     .exchange-requests-container,
-    .messaging-container {
+    .messaging-container
+    .notifications-container {
         padding: 28px 16px;
     }
 
     .auth-card,
     .announcement-card,
     .exchange-request-card,
-    .exchange-requests-card 
-    .messaging-card {
+    .exchange-requests-card,
+    .messaging-card,
+    .notifications-card {
         padding: 18px;
     }
 

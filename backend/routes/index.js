@@ -13,6 +13,9 @@ const { createExchangeRequest, getMyExchangeRequests } = require("../controllers
 // Importation du contrôleur des messages
 const { sendMessage, getMessages } = require("../controllers/messageController");
 
+// Importation du contrôleur des notifications
+const { getNotificationsController, markNotificationAsReadController } = require("../controllers/notificationController");
+
 // Importation du middleware d'authentification
 const authenticateToken = require("../middleware/authMiddleware");
 
@@ -58,6 +61,12 @@ router.post("/messages", authenticateToken, sendMessage);
 
 // Route de récupération des messages échangés avec un utilisateur
 router.get("/messages/:recipientId", authenticateToken, getMessages);
+
+// Routes de récupération
+router.get("/notifications", authenticateToken, getNotificationsController);
+
+// Routes de lecture des notifications
+router.put("/notifications/:id/read", authenticateToken, markNotificationAsReadController);
 
 // Exportation des routes
 module.exports = router;

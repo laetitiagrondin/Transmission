@@ -4,6 +4,9 @@ const db = require("../database");
 // Importation du modèle Message
 const Message = require("../models/Message");
 
+// Importation du modèle Notification
+const Notification = require("../models/Notification");
+
 // Envoi d'un message
 async function sendMessage(req, res) {
     try {
@@ -24,6 +27,10 @@ async function sendMessage(req, res) {
         );
 
         const message = result.rows[0];
+
+        if (senderId !== Number(recipientId)) {
+            await Notification.createNotification(Number(recipientId), "message", "Vous avez reçu un nouveau message.");
+        }
 
         return res.status(201).json({
             message: "Message envoyé avec succès.",
@@ -57,5 +64,4 @@ async function getMessages(req, res) {
     }
 }
 
-// Exportation des fonctions du contrôleur
 module.exports = { sendMessage, getMessages };

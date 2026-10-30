@@ -1,5 +1,5 @@
 // Importation des hooks React
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 // Création du composant principal
 function App() {
@@ -43,6 +43,10 @@ function App() {
     const [recipientId, setRecipientId] = useState("");
     const [content, setContent] = useState("");
     const [messages, setMessages] = useState([]);
+
+    // Déclaration des variables des notifications
+    const [notifications, setNotifications] = useState([]);
+    const [unreadCount, setUnreadCount] = useState(0);
 
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
@@ -260,6 +264,8 @@ function App() {
     // Déconnexion de l'utilisateur
     function handleLogout() {
         localStorage.removeItem("token");
+        setNotifications([]);
+        setUnreadCount(0);
         setToken("");
         setProfile(null);
         setAnnouncements([]);
@@ -406,6 +412,93 @@ function App() {
             setIsLoading(false);
         }
     }
+
+    // Récupération des notifications de l'utilisateur connecté
+    async function handleGetNotifications() {
+        try {
+            const response = await fetch("http://localhost:3000/api/notifications", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "Impossible de récupérer les notifications.");
+                return;
+            }
+
+            setNotifications(Array.isArray(data) ? data : []);
+            setUnreadCount(data.filter(notification => !notification.isRead).length);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des notifications :", error);
+            setMessage("Impossible de contacter le serveur.");
+        }
+    }
+
+    // Marquage d'une notification comme lue
+    async function handleMarkNotificationAsRead(notificationId) {
+        try {
+            const response = await fetch(`http://localhost:3000/api/notifications/${notificationId}/read`, {
+                method: "PUT",
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "Impossible de marquer la notification comme lue.");
+                return;
+            }
+
+            setNotifications(previousNotifications => previousNotifications.map(notification => notification.id === notificationId ? data : notification));
+            setUnreadCount(previousCount => Math.max(0, previousCount - 1));
+        } catch (error) {
+            console.error("Erreur lors du marquage de la notification :", error);
+            setMessage("Impossible de contacter le serveur.");
+        }
+    }
+
+    // Chargement des notifications lorsque l'utilisateur est connecté
+    useEffect(() => {
+        if (!token) {
+            return;
+        }
+
+        let isActive = true;
+
+        async function loadNotifications() {
+            try {
+                const response = await fetch("http://localhost:3000/api/notifications", {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    if (isActive) {
+                        setMessage(data.message || "Impossible de récupérer les notifications.");
+                    }
+                    return;
+                }
+
+                if (isActive) {
+                    const userNotifications = Array.isArray(data) ? data : [];
+                    setNotifications(userNotifications);
+                    setUnreadCount(userNotifications.filter(notification => !notification.isRead).length);
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des notifications :", error);
+                if (isActive) {
+                    setMessage("Impossible de contacter le serveur.");
+                }
+            }
+        }
+
+        loadNotifications();
+
+        return () => {
+            isActive = false;
+        };
+    }, [token]);
 
     return (
         <main className="announcements-container">
@@ -676,6 +769,30 @@ function App() {
                                     </article>
                                 ))}
                             </div>
+                        </section>
+                    </section>
+
+                    <section className="notifications-container">
+                        <section className="notifications-card">
+                            <h2>Notifications ({unreadCount})</h2>
+
+                            <button type="button" onClick={handleGetNotifications}>Actualiser</button>
+
+                            {notifications.length === 0 ? (<p>Aucune notification.</p>
+                            ) : (
+                                <ul>
+                                    {notifications.map(notification => (
+                                        <li key={notification.id}>
+                                            <p>{notification.message}</p>
+                                            <p>{new Date(notification.createdAt).toLocaleString("fr-FR")}</p>
+
+                                            {!notification.isRead && (
+                                                <button type="button" onClick={() => handleMarkNotificationAsRead(notification.id)}> comme lue</button>
+                                            )}
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </section>
                     </section>
 

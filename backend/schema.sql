@@ -84,3 +84,24 @@ CREATE TABLE IF NOT EXISTS messages (
     -- Date d'envoi du message
     "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Création de la table des notifications
+CREATE TABLE IF NOT EXISTS notifications (
+    -- Identifiant unique de la notification
+    id SERIAL PRIMARY KEY,
+
+    -- Identifiant de l'utilisateur qui reçoit la notification
+    "userId" INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Type de notification : message ou demande d'échange
+    type VARCHAR(50) NOT NULL,
+
+    -- Contenu de la notification
+    message TEXT NOT NULL,
+
+    -- Indique si la notification a été lue
+    "isRead" BOOLEAN NOT NULL DEFAULT FALSE,
+
+    -- Date de création de la notification
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

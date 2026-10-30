@@ -1,6 +1,9 @@
 // Importation de la connexion à PostgreSQL
 const db = require("../database");
 
+// Importation du modèle Notification
+const Notification = require("../models/Notification");
+
 // Création d'une demande d'échange
 async function createExchangeRequest(req, res) {
     try {
@@ -31,6 +34,8 @@ async function createExchangeRequest(req, res) {
              RETURNING *`,
             [announcementId, req.user.id, message || "", "en_attente"]
         );
+
+        await Notification.createNotification(announcement.rows[0].userId, "exchange_request", "Vous avez reçu une nouvelle demande d'échange.");
 
         return res.status(201).json(result.rows[0]);
     } catch (error) {
