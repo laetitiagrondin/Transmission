@@ -1,0 +1,84 @@
+// Importation du framework Express
+const express = require("express");
+
+// Importation du contrôleur utilisateur
+const { registerUser, loginUser, getMyProfile, updateMyProfile } = require("../controllers/userControllers");
+
+// Importation du contrôleur des annonces
+const { createAnnouncementController, getAnnouncementsController } = require("../controllers/announcementController");
+
+// Importation du contrôleur des demandes d'échange
+const { createExchangeRequest, getMyExchangeRequests, updateExchangeRequestStatus } = require("../controllers/exchangeRequestController");
+
+// Importation du contrôleur des messages
+const { sendMessage, getMessages } = require("../controllers/messageController");
+
+// Importation du contrôleur des notifications
+const { getNotificationsController, markNotificationAsReadController } = require("../controllers/notificationController");
+
+// Importation du contrôleur des rendez-vous
+const { createAppointment, getMyAppointments } = require("../controllers/appointmentController");
+
+// Importation du middleware d'authentification
+const authenticateToken = require("../middleware/authMiddleware");
+
+// Création du routeur
+const router = express.Router();
+
+// Route principale de l'API
+router.get("/", (req, res) => {
+    res.json({ message: "Transmission API" });
+});
+
+// Route d'inscription
+router.post("/users", registerUser);
+
+// Routes de connexion
+router.post("/users/login", loginUser);
+
+// Route de création d'une annonce
+router.post("/announcements", authenticateToken, createAnnouncementController);
+
+// Router de récupération des annonces
+router.get("/announcements", authenticateToken, getAnnouncementsController);
+
+// Route de récupération du profil de l'utilisateur connecté
+router.get("/users/me", authenticateToken, getMyProfile);
+
+// Route de modification du profil de l'utilisateur connecté
+router.put("/users/me", authenticateToken, updateMyProfile);
+
+// Route de modification du statut d'une demande d'échange
+router.put("/exchange-requests/:id/status", authenticateToken, updateExchangeRequestStatus);
+
+// Vérification de l'authentification
+router.get("/protected", authenticateToken, (req, res) => {
+    res.json({ message: "Accès autorisé", user: req.user });
+});
+
+// Route de création d'une demande d'échange
+router.post("/exchange-requests", authenticateToken, createExchangeRequest);
+
+// Route de récupération des demandes d'échange de l'utilisateur connecté
+router.get("/exchange-requests", authenticateToken, getMyExchangeRequests);
+
+// Route d'envoi d'un message
+router.post("/messages", authenticateToken, sendMessage);
+
+// Route de récupération des messages échangés avec un utilisateur
+router.get("/messages/:recipientId", authenticateToken, getMessages);
+
+// Routes de récupération
+router.get("/notifications", authenticateToken, getNotificationsController);
+
+// Routes de lecture des notifications
+router.put("/notifications/:id/read", authenticateToken, markNotificationAsReadController);
+
+// Route de création d'un rendez-vous
+router.post("/appointments", authenticateToken, createAppointment);
+
+// Route de récupération des rendez-vous de l'utilisateur connecté
+router.get("/appointments", authenticateToken, getMyAppointments);
+
+// Exportation des routes
+module.exports = router;
