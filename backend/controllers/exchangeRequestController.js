@@ -63,4 +63,46 @@ async function getMyExchangeRequests(req, res) {
     }
 }
 
-module.exports = { createExchangeRequest, getMyExchangeRequests };
+// Modification du statut d'une demande d'échange
+async function updateExchangeRequestStatus(req, res) {
+    try {
+        const { status } = req.body;
+        const { id } = req.params;
+
+        if (!["acceptee", "refusee"].includes(status)) {
+            return res.status(400).json({ message: "Statut invalide." });
+        }
+
+        const request = await db.query(
+            `SELECT "exchangeRequests".id, "exchangeRequests"."requesterId",
+                    announcements."userId" AS "announcementOwnerId"
+             FROM "exchangeRequests"
+             JOIN announcements ON announcements.id = "exchangeRequests"."announcementId"
+             WHERE "exchangeRequests".id = $1`,
+            [id]
+        );
+
+        if (request.rows.length === 0) {
+            return res.status(404).json({ message: "Demande d'échange introuvable." });
+        }
+
+        if (Number(request.rows[0].announcementOwnerId) !== Number(req.user.id)) {
+            return res.status(403).json({ message: "Vous ne pouvez pas modifier cette demande." });
+        }
+
+        const result = await db.query(`UPDATE "exchangeRequests" SET status = $1 WHERE id = $2 RETURNING *`, [status, id]);
+
+        await Notification.createNotification(
+            request.rows[0].requesterId,
+            "exchange_request_status",
+            `Votre demande d'échange a été ${status}.`
+        );
+
+        return res.status(200).json(result.rows[0]);
+    } catch (error) {
+        console.error("Erreur lors de la modification du statut :", error);
+        return res.status(500).json({ message: "Erreur lors de la modification du statut." });
+    }
+}
+
+module.exports = { createExchangeRequest, getMyExchangeRequests, updateExchangeRequestStatus };

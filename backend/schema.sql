@@ -105,3 +105,24 @@ CREATE TABLE IF NOT EXISTS notifications (
     -- Date de création de la notification
     "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Création de la table des rendez-vous
+CREATE TABLE IF NOT EXISTS appointments (
+    -- Identifiant unique du rendez-vous
+    id SERIAL PRIMARY KEY,
+
+    -- Identifiant de la demande d'échange acceptée
+    "exchangeRequestId" INTEGER NOT NULL UNIQUE REFERENCES "exchangeRequests"(id) ON DELETE CASCADE,
+
+    -- Date et heure du rendez-vous
+    "appointmentDate" TIMESTAMP NOT NULL,
+
+    -- Lieu du rendez-vous
+    location VARCHAR(255) NOT NULL,
+
+    -- Statut du rendez-vous
+    status VARCHAR(50) NOT NULL DEFAULT 'confirme',
+
+    -- Date de création du rendez-vous
+    "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

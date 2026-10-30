@@ -8,13 +8,16 @@ const { registerUser, loginUser, getMyProfile, updateMyProfile } = require("../c
 const { createAnnouncementController, getAnnouncementsController } = require("../controllers/announcementController");
 
 // Importation du contrôleur des demandes d'échange
-const { createExchangeRequest, getMyExchangeRequests } = require("../controllers/exchangeRequestController");
+const { createExchangeRequest, getMyExchangeRequests, updateExchangeRequestStatus } = require("../controllers/exchangeRequestController");
 
 // Importation du contrôleur des messages
 const { sendMessage, getMessages } = require("../controllers/messageController");
 
 // Importation du contrôleur des notifications
 const { getNotificationsController, markNotificationAsReadController } = require("../controllers/notificationController");
+
+// Importation du contrôleur des rendez-vous
+const { createAppointment, getMyAppointments } = require("../controllers/appointmentController");
 
 // Importation du middleware d'authentification
 const authenticateToken = require("../middleware/authMiddleware");
@@ -45,6 +48,9 @@ router.get("/users/me", authenticateToken, getMyProfile);
 // Route de modification du profil de l'utilisateur connecté
 router.put("/users/me", authenticateToken, updateMyProfile);
 
+// Route de modification du statut d'une demande d'échange
+router.put("/exchange-requests/:id/status", authenticateToken, updateExchangeRequestStatus);
+
 // Vérification de l'authentification
 router.get("/protected", authenticateToken, (req, res) => {
     res.json({ message: "Accès autorisé", user: req.user });
@@ -67,6 +73,12 @@ router.get("/notifications", authenticateToken, getNotificationsController);
 
 // Routes de lecture des notifications
 router.put("/notifications/:id/read", authenticateToken, markNotificationAsReadController);
+
+// Route de création d'un rendez-vous
+router.post("/appointments", authenticateToken, createAppointment);
+
+// Route de récupération des rendez-vous de l'utilisateur connecté
+router.get("/appointments", authenticateToken, getMyAppointments);
 
 // Exportation des routes
 module.exports = router;

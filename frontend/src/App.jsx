@@ -48,6 +48,12 @@ function App() {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
 
+    // Déclaration des variables des rendez-vous
+    const [appointments, setAppointments] = useState([]);
+    const [appointmentExchangeRequestId, setAppointmentExchangeRequestId] = useState("");
+    const [appointmentDate, setAppointmentDate] = useState("");
+    const [appointmentLocation, setAppointmentLocation] = useState("");
+
     // Envoi du formulaire d'inscription
     async function handleRegister(event) {
         event.preventDefault();
@@ -458,6 +464,76 @@ function App() {
         }
     }
 
+    // Récupération des rendez-vous de l'utilisateur connecté
+    async function handleGetAppointments() {
+        setMessage("");
+        setIsLoading(true);
+
+        try {
+            const response = await fetch("http://localhost:3000/api/appointments", {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "Impossible de récupérer les rendez-vous.");
+                return;
+            }
+
+            setAppointments(Array.isArray(data) ? data : []);
+        } catch (error) {
+            console.error("Erreur lors de la récupération des rendez-vous :", error);
+            setMessage("Impossible de contacter le serveur.");
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    // Création d'un rendez-vous
+    async function handleCreateAppointment(event) {
+        event.preventDefault();
+
+        if (!appointmentExchangeRequestId || !appointmentDate || !appointmentLocation.trim()) {
+            setMessage("Veuillez renseigner tous les champs du rendez-vous.");
+            return;
+        }
+
+        setMessage("");
+        setIsSubmitting(true);
+
+        try {
+            const response = await fetch("http://localhost:3000/api/appointments", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({
+                    exchangeRequestId: Number(appointmentExchangeRequestId),
+                    appointmentDate,
+                    location: appointmentLocation.trim()
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "La création du rendez-vous a échoué.");
+                return;
+            }
+
+            setAppointmentExchangeRequestId("");
+            setAppointmentDate("");
+            setAppointmentLocation("");
+            setMessage("Rendez-vous créé avec succès.");
+
+            await handleGetAppointments();
+        } catch (error) {
+            console.error("Erreur lors de la création du rendez-vous :", error);
+            setMessage("Impossible de contacter le serveur.");
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
     // Chargement des notifications lorsque l'utilisateur est connecté
     useEffect(() => {
         if (!token) {
@@ -766,6 +842,63 @@ function App() {
                                         <p>{request.message || "Aucun message."}</p>
                                         <p>Statut : {request.status}</p>
                                         <p>{Number(request.requesterId) === Number(request.announcementOwnerId) ? "Demande reçue" : "Demande envoyée ou reçue"}</p>
+                                    </article>
+                                ))}
+                            </div>
+                        </section>
+                    </section>
+
+                    <section className="appointments-container">
+                        <section className="appointments-card">
+                            <h2>Mes rendez-vous</h2>
+
+                            <h3>Créer un rendez-vous</h3>
+
+                            <form onSubmit={handleCreateAppointment}>
+                                <label htmlFor="appointmentExchangeRequestId">Demande d'échange acceptée</label>
+                                <select
+                                    id="appointmentExchangeRequestId"
+                                    value={appointmentExchangeRequestId}
+                                    onChange={(event) => setAppointmentExchangeRequestId(event.target.value)}
+                                    required>
+                                    <option value="">Choisir une demande acceptée</option>
+                                    {exchangeRequests.filter((request) => request.status === "acceptee").map((request) => (
+                                        <option key={request.id} value={request.id}>{request.announcementTitle || `Demande ${request.id}`} — demande n° {request.id}</option>
+                                    ))}
+                                </select>
+
+                                <label htmlFor="appointmentDate">Date et heure</label>
+                                <input
+                                    id="appointmentDate"
+                                    type="datetime-local"
+                                    value={appointmentDate}
+                                    onChange={(event) => setAppointmentDate(event.target.value)}
+                                    required/>
+
+                                <label htmlFor="appointmentLocation">Lieu du rendez-vous</label>
+                                <input
+                                    id="appointmentLocation"
+                                    type="text"
+                                    value={appointmentLocation}
+                                    onChange={(event) => setAppointmentLocation(event.target.value)}
+                                    required/>
+
+                                <button type="submit" disabled={isSubmitting}>{isSubmitting ? "Création en cours..." : "Créer le rendez-vous"}</button>
+                            </form>
+
+                            <h3>Liste de mes rendez-vous</h3>
+
+                            <button type="button" onClick={handleGetAppointments} disabled={isLoading}>{isLoading ? "Chargement..." : "Afficher mes rendez-vous"}</button>
+
+                            {appointments.length === 0 && (<p>Aucun rendez-vous à afficher.</p>)}
+
+                            <div className="appointments-list">
+                                {appointments.map((appointment) => (
+                                    <article className="appointment-card" key={appointment.id}>
+                                        <h4>{appointment.announcementTitle || `Demande ${appointment.exchangeRequestId}`}</h4>
+                                        <p>Date : {new Date(appointment.appointmentDate).toLocaleString("fr-FR")}</p>
+                                        <p>Lieu : {appointment.location}</p>
+                                        <p>Statut : {appointment.status}</p>
                                     </article>
                                 ))}
                             </div>
