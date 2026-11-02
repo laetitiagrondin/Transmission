@@ -22,6 +22,9 @@ const { createAppointment, getMyAppointments } = require("../controllers/appoint
 // Importation du middleware d'authentification
 const authenticateToken = require("../middleware/authMiddleware");
 
+// Importation du contrôleur Google Calendar
+const { connectGoogleCalendar, googleCalendarCallback } = require("../controllers/googleCalendarController");
+
 // Création du routeur
 const router = express.Router();
 
@@ -79,6 +82,12 @@ router.post("/appointments", authenticateToken, createAppointment);
 
 // Route de récupération des rendez-vous de l'utilisateur connecté
 router.get("/appointments", authenticateToken, getMyAppointments);
+
+// Route de connexion à Google Calendar
+router.get("/google-calendar/auth", authenticateToken, connectGoogleCalendar);
+
+// Route de retour après autorisation Google Calendar
+router.get("/google-calendar/callback", googleCalendarCallback);
 
 // Exportation des routes
 module.exports = router;

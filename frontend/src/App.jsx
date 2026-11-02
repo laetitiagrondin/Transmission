@@ -283,6 +283,30 @@ function App() {
         setMessage("Vous êtes déconnecté(e).");
     }
 
+    // Connexion à Google Calendar
+    async function handleGoogleCalendarConnect() {
+        try {
+            const response = await fetch("http://localhost:3000/api/google-calendar/auth", {
+                method: "GET",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "La connexion à Google Calendar a échoué.");
+                return;
+            }
+
+            // Redirection vers la page d'autorisation Google
+            window.location.href = data.url;
+        } catch (error) {
+            setMessage("Impossible de contacter le serveur pour Google Calendar.");
+        }
+    }
+
     // Récupération des annonces
     async function handleGetAnnouncements() {
         if (!token) {
@@ -419,6 +443,35 @@ function App() {
         }
     }
 
+    // Acceptation ou refus d'une demande d'échange
+    async function handleUpdateExchangeRequestStatus(id, status) {
+        setMessage("");
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/exchange-requests/${id}/status`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+                body: JSON.stringify({ status })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setMessage(data.message || "Impossible de modifier le statut de la demande.");
+                return;
+            }
+
+            // Actualisation des demandes et des notifications
+            await handleGetExchangeRequests();
+            await handleGetNotifications();
+
+            setMessage(tatus === "acceptee" ? "La demande d'échange a été acceptée." : "La demande d'échange a été refusée.");
+        } catch (error) {
+            console.error("Erreur lors de la modification du statut :", error);
+            setMessage("Impossible de contacter le serveur.");
+        }
+    }
+
     // Récupération des notifications de l'utilisateur connecté
     async function handleGetNotifications() {
         try {
@@ -523,9 +576,11 @@ function App() {
             setAppointmentExchangeRequestId("");
             setAppointmentDate("");
             setAppointmentLocation("");
-            setMessage("Rendez-vous créé avec succès.");
 
             await handleGetAppointments();
+
+            setMessage(data.googleCalendarMessage ? `Rendez-vous créé avec succès. ${data.googleCalendarMessage}` : "Rendez-vous créé avec succès.");
+
         } catch (error) {
             console.error("Erreur lors de la création du rendez-vous :", error);
             setMessage("Impossible de contacter le serveur.");
@@ -533,6 +588,26 @@ function App() {
             setIsSubmitting(false);
         }
     }
+
+    // Gestion du retour après connexion à Google Calendar
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const googleCalendar = params.get("googleCalendar");
+
+        if (googleCalendar === "connected") {
+            setMessage("Votre compte Google Calendar est connecté avec succès.");
+        } else if (googleCalendar === "error") {
+            setMessage("La connexion à Google Calendar a échoué.");
+        }
+
+        // Suppression du paramètre dans l'URL
+        if (googleCalendar) {
+            const url = new URL(window.location.href);
+            url.searchParams.delete("googleCalendar");
+
+            window.history.replaceState({}, document.title, url.pathname + url.search + url.hash);
+        }
+    }, []);
 
     // Chargement des notifications lorsque l'utilisateur est connecté
     useEffect(() => {
@@ -722,6 +797,12 @@ function App() {
                         </div>
                     )}
                     </section>
+                    
+                    <section className="calendar-section">
+                        <h2>Google Calendar</h2>
+                        <p>Connectez votre compte Google pour gérer vos rendez-vous.</p>
+                        <button type="button" onClick={handleGoogleCalendarConnect}>Connecter Google Calendar</button>
+                    </section>
 
                     <section className="announcements-container">
                         <h2>Annonces</h2>
@@ -836,14 +917,26 @@ function App() {
                             {exchangeRequests.length === 0 && (<p>Aucune demande affichée.</p>)}
 
                             <div className="exchange-requests-list">
-                                {exchangeRequests.map((request) => (
-                                    <article className="exchange-request-card" key={request.id}>
-                                        <h4>{request.announcementTitle || `Annonce ${request.announcementId}`}</h4>
-                                        <p>{request.message || "Aucun message."}</p>
-                                        <p>Statut : {request.status}</p>
-                                        <p>{Number(request.requesterId) === Number(request.announcementOwnerId) ? "Demande reçue" : "Demande envoyée ou reçue"}</p>
-                                    </article>
-                                ))}
+                                {exchangeRequests.map((request) => {
+                                    const isReceived = request.isReceived;
+
+                                    return (
+                                        <article className="exchange-request-card" key={request.id}>
+                                            <h4>{request.announcementTitle || `Annonce ${request.announcementId}`}</h4>
+                                            <p>{request.message || "Aucun message."}</p>
+                                            <p>Statut : {request.status}</p>
+                                            <p>{isReceived ? "Demande reçue" : "Demande envoyée"}</p>
+
+                                            {isReceived && request.status === "en_attente" && (
+                                                <div className="exchange-request-actions">
+                                                    <button type="button" onClick={() => handleUpdateExchangeRequestStatus(request.id, "acceptee")} disabled={isLoading}>Accepter</button>
+
+                                                    <button type="button" onClick={() => handleUpdateExchangeRequestStatus(request.id, "refusee")} disabled={isLoading}>Refuser</button>
+                                                </div>
+                                            )}
+                                        </article>
+                                    );
+                                })}
                             </div>
                         </section>
                     </section>

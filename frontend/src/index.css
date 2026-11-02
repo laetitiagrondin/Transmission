@@ -308,6 +308,24 @@ button:disabled {
     margin-top: 0;
 }
 
+.exchange-request-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.exchange-request-actions button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.exchange-request-actions button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 @media (max-width: 520px) {
     .announcements-container,
     .exchange-requests-container,

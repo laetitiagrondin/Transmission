@@ -48,11 +48,12 @@ async function createExchangeRequest(req, res) {
 async function getMyExchangeRequests(req, res) {
     try {
         const result = await db.query(
-            `SELECT "exchangeRequests".*, announcements.title AS "announcementTitle", announcements."userId" AS "announcementOwnerId"
-             FROM "exchangeRequests"
-             JOIN announcements ON announcements.id = "exchangeRequests"."announcementId"
-             WHERE "exchangeRequests"."requesterId" = $1 OR announcements."userId" = $1
-             ORDER BY "exchangeRequests"."createdAt" DESC`,
+            `SELECT "exchangeRequests".*, announcements.title AS "announcementTitle", announcements."userId" AS "announcementOwnerId",
+            CASE WHEN announcements."userId" = $1 THEN TRUE ELSE FALSE END AS "isReceived"
+            FROM "exchangeRequests"
+            JOIN announcements ON announcements.id = "exchangeRequests"."announcementId"
+            WHERE "exchangeRequests"."requesterId" = $1 OR announcements."userId" = $1
+            ORDER BY "exchangeRequests"."createdAt" DESC`,
             [req.user.id]
         );
 

@@ -126,3 +126,27 @@ CREATE TABLE IF NOT EXISTS appointments (
     -- Date de création du rendez-vous
     "createdAt" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Création de la table des autorisations Google Calendar
+CREATE TABLE IF NOT EXISTS google_calendar_tokens (
+    -- Identifiant unique de l'autorisation
+    id SERIAL PRIMARY KEY,
+
+    -- Identifiant de l'utilisateur associé à son agenda Google
+    user_id INTEGER NOT NULL UNIQUE REFERENCES users(id) ON DELETE CASCADE,
+
+    -- Jeton d'accès Google chiffré
+    access_token_encrypted TEXT NOT NULL,
+
+    -- Jeton de renouvellement Google chiffré
+    refresh_token_encrypted TEXT NOT NULL,
+
+    -- Date d'expiration du jeton d'accès
+    expiry_date BIGINT,
+
+    -- Date de création de l'autorisation
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    -- Date de dernière modification de l'autorisation
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
