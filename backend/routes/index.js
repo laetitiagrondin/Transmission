@@ -11,7 +11,7 @@ const { createAnnouncementController, getAnnouncementsController } = require("..
 const { createExchangeRequest, getMyExchangeRequests, updateExchangeRequestStatus } = require("../controllers/exchangeRequestController");
 
 // Importation du contrôleur des messages
-const { sendMessage, getMessages } = require("../controllers/messageController");
+const { sendMessage, getMessages, getConversations  } = require("../controllers/messageController");
 
 // Importation du contrôleur des notifications
 const { getNotificationsController, markNotificationAsReadController } = require("../controllers/notificationController");
@@ -67,6 +67,9 @@ router.get("/exchange-requests", authenticateToken, getMyExchangeRequests);
 
 // Route d'envoi d'un message
 router.post("/messages", authenticateToken, sendMessage);
+
+// Récupération de la liste des conversations de l'utilisateur connecté
+router.get("/messages/conversations", authenticateToken, getConversations);
 
 // Route de récupération des messages échangés avec un utilisateur
 router.get("/messages/:recipientId", authenticateToken, getMessages);
