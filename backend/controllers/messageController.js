@@ -64,4 +64,52 @@ async function getMessages(req, res) {
     }
 }
 
-module.exports = { sendMessage, getMessages };
+// Récupération des conversations de l'utilisateur connecté
+async function getConversations(req, res) {
+    try {
+        const userId = req.user.id;
+
+        const result = await db.query(
+            `WITH conversation_messages AS (
+                SELECT
+                    CASE
+                        WHEN m."senderId" = $1 THEN m."recipientId"
+                        ELSE m."senderId"
+                    END AS "userId",
+                    m.content,
+                    m."createdAt",
+                    ROW_NUMBER() OVER (
+                        PARTITION BY
+                            CASE
+                                WHEN m."senderId" = $1 THEN m."recipientId"
+                                ELSE m."senderId"
+                            END
+                        ORDER BY m."createdAt" DESC, m.id DESC
+                    ) AS position
+                FROM messages m
+                WHERE m."senderId" = $1
+                   OR m."recipientId" = $1
+            )
+            SELECT
+                u.id AS "userId",
+                u."firstName",
+                u."lastName",
+                cm.content AS "lastMessage",
+                cm."createdAt" AS "lastMessageAt"
+            FROM conversation_messages cm
+            JOIN users u ON u.id = cm."userId"
+            WHERE cm.position = 1
+            ORDER BY cm."createdAt" DESC`,
+            [userId]
+        );
+
+        return res.status(200).json(result.rows);
+    } catch (error) {
+        console.error("Erreur lors de la récupération des conversations :", error);
+        return res.status(500).json({
+            message: "Erreur serveur lors de la récupération des conversations."
+        });
+    }
+}
+
+module.exports = { sendMessage, getMessages, getConversations };
