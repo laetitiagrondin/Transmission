@@ -1,5 +1,7 @@
+/* Styles généraux */
+
 :root {
-    font-family:system-ui, "Segoe UI", sans-serif;
+    font-family: system-ui, "Segoe UI", sans-serif;
     color: #343047;
     background: #f7f4fb;
     font-synthesis: none;
@@ -29,78 +31,50 @@ select {
     font: inherit;
 }
 
-.announcements-container
-.exchange-requests-container,
-.appointments-container {
+/* Page d'inscription */
+
+.auth-container {
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 40px 24px;
+    background: #f7f4fb;
 }
 
-.auth-card,
-.announcement-card,
-.exchange-request-card,
-.exchange-requests-card
-.messaging-card
-
-.notifications-card,
-.appointments-card,
-.appointment-card {
-    margin-bottom: 24px;
-    padding: 28px;
+.auth-card {
+    width: 100%;
+    max-width: 480px;
+    margin: 0;
+    padding: 36px;
     background: #ffffff;
     border: 1px solid #e5e0ed;
     border-radius: 16px;
     box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
 }
 
-.announcements-container > h1 {
-    margin: 0;
-    color: #6941a5;
-    font-size: 2.4rem;
-    text-align: center;
-}
-
-.announcements-container > h2,
-.exchange-requests-container > h2 {
-    margin: 8px 0 28px;
-    color: #6b6375;
-    text-align: center;
-}
-
-.auth-card h2
-.messaging-card h2,
-.appointments-card h2 {
+.auth-card h1 {
     margin-top: 0;
-    color: #343047;
+    margin-bottom: 28px;
+    color: #6941a5;
+    text-align: center;
 }
 
-.auth-card > p {
-    color: #6b6375;
-}
+/* Formulaire d'inscription */
 
-form {
+.auth-card form {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-label {
+.auth-card label {
     margin-top: 8px;
     font-weight: 600;
 }
 
-.auth-card input,
-.announcement-form input,
-.announcement-form textarea,
-.announcement-form select,
-.exchange-request-card input,
-.exchange-request-card textarea,
-.messaging-card input,
-.messaging-card textarea,
-.appointments-card input,
-.appointments-card select {
+.auth-card input {
     width: 100%;
     padding: 12px;
     color: #343047;
@@ -109,32 +83,17 @@ label {
     border-radius: 8px;
 }
 
-.announcement-form {
-    gap: 12px;
-}
-
-.announcement-form textarea,
-.exchange-request-card textarea,
-.messaging-card textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.auth-card input:focus,
-.announcement-form input:focus,
-.announcement-form textarea:focus,
-.announcement-form select:focus,
-.exchange-request-card input:focus,
-.exchange-request-card textarea:focus,
-.messaging-card input:focus,
-.messaging-card textarea:focus,
-.appointments-card input:focus,
-.appointments-card select:focus {
+.auth-card input:focus {
     outline: 2px solid #aa3bff;
     outline-offset: 1px;
 }
 
-button {
+/* Boutons */
+
+.auth-card button,
+.profile-card button,
+.announcement-card button,
+.announcements-list button {
     margin-top: 16px;
     padding: 13px;
     color: #ffffff;
@@ -145,209 +104,487 @@ button {
     cursor: pointer;
 }
 
-button:disabled {
+.auth-card button:disabled,
+.profile-card button:disabled,
+.announcement-card button:disabled,
+.announcements-list button:disabled {
     cursor: wait;
     opacity: 0.65;
 }
+
+/* Navigation entre inscription et connexion */
+
+.auth-switch {
+    margin-top: 24px;
+    margin-bottom: 0;
+    color: #6b6375;
+    text-align: center;
+}
+
+.auth-card .auth-switch-button {
+    width: 100%;
+    margin-top: 8px;
+    color: #6941a5;
+    background: #ffffff;
+    border: 1px solid #6941a5;
+}
+
+.auth-card .auth-switch-button:hover {
+    background: #f7f4fb;
+}
+
+/* Messages du formulaire */
 
 .form-message {
     margin-top: 20px;
     overflow-wrap: anywhere;
 }
 
-.announcements-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
+/* Page du profil */
 
-.announcements-list > button {
-    align-self: flex-start;
-}
-
-.announcement-card h3,
-.announcement-card h4,
-.exchange-request-card h3,
-.exchange-requests-card h4 {
-    overflow-wrap: anywhere;
-}
-
-.exchange-requests-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.exchange-requests-list > button {
-    align-self: flex-start;
-}
-
-.messaging-container {
+.profile-container {
     width: 100%;
-    max-width: 760px;
-    margin: 0 auto;
+    min-height: calc(100vh - 70px);
+    display: grid;
+    place-items: center;
     padding: 40px 24px;
 }
 
-.messaging-card form {
-    margin-top: 20px;
+.profile-card {
+    width: 100%;
+    max-width: 600px;
+    margin: auto;
+    padding: 36px;
+    background: #ffffff;
+    border: 1px solid #e5e0ed;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
 }
 
-.messaging-card button {
-    padding: 12px 16px;
+.profile-card h1 {
+    margin-top: 0;
+    color: #6941a5;
+    text-align: center;
 }
 
-.conversation-header,
-.recipient-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-.conversation-header {
-    flex-wrap: wrap;
-}
-
-.conversation-header p {
-    margin-bottom: 0;
-    color: #6b6375;
-}
-
-.recipient-row input {
-    flex: 1;
-    min-width: 0;
-}
-
-.messages-list {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
+.profile-content {
     margin-top: 24px;
 }
 
-.message-item {
-    padding: 14px;
-    overflow-wrap: anywhere;
-    background: #eef5ef;
-    border: 1px solid #e5e0ed;
-    border-radius: 8px;
-}
-
-.message-item p {
-    margin-top: 0;
-    white-space: pre-wrap;
-}
-
-.message-item small {
-    display: block;
-    margin-top: 6px;
-    color: #68756d;
-}
-
-.notifications-container {
-    width: 100%;
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 40px 24px;
-}
-
-.notifications-card h2 {
-    margin-top: 0;
+.profile-details p {
     color: #343047;
+    overflow-wrap: anywhere;
 }
 
-.notifications-card ul {
+.profile-form {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    padding: 0;
-    list-style: none;
-}
-
-.notifications-card li {
-    padding: 14px;
-    overflow-wrap: anywhere;
-    background: #eef5ef;
-    border: 1px solid #e5e0ed;
-    border-radius: 8px;
-}
-
-.notifications-card li p {
-    margin-top: 0;
-}
-
-.notifications-card button {
-    padding: 12px 16px;
-}
-
-.appointments-container {
-    width: 100%;
-    max-width: 760px;
-    margin: 0 auto;
-    padding: 40px 24px;
-}
-
-.appointments-card h2,
-.appointments-card h3 {
-    color: #343047;
-}
-
-.appointments-list {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    margin-top: 20px;
-}
-
-.appointment-card {
-    overflow-wrap: anywhere;
-}
-
-.appointment-card h4 {
-    margin-top: 0;
-}
-
-.exchange-request-actions {
-    display: flex;
     gap: 10px;
-    margin-top: 15px;
 }
 
-.exchange-request-actions button {
-    padding: 10px 16px;
+.profile-form label {
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.profile-form input {
+    width: 100%;
+    padding: 12px;
+    color: #343047;
+    background: #ffffff;
+    border: 1px solid #d8d2e2;
+    border-radius: 8px;
+}
+
+.profile-form input:focus {
+    outline: 2px solid #aa3bff;
+    outline-offset: 1px;
+}
+
+.profile-card .profile-cancel-button {
+    color: #6941a5;
+    background: #ffffff;
+    border: 1px solid #6941a5;
+}
+
+.profile-cancel-button:hover {
+    background: #f7f4fb;
+}
+
+/* Page des annonces */
+.announcements-container {
+    width: 100%;
+    max-width: 1000px;
+    min-height: calc(100vh - 70px);
+    margin: 0 auto;
+    padding: 40px 24px;
+}
+
+.announcements-container > h2 {
+    margin-top: 0;
+    margin-bottom: 28px;
+    color: #6941a5;
+    text-align: center;
+}
+
+/* Cartes des annonces */
+.announcement-card {
+    width: 100%;
+    margin-bottom: 24px;
+    padding: 28px;
+    background: #ffffff;
+    border: 1px solid #e5e0ed;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
+}
+
+.announcement-card h3,
+.announcement-card h4 {
+    margin-top: 0;
+    color: #6941a5;
+}
+
+.announcement-card p {
+    color: #343047;
+    overflow-wrap: anywhere;
+}
+
+/* Formulaire des annonces */
+.announcement-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.announcement-form label {
+    margin-top: 8px;
+    font-weight: 600;
+}
+
+.announcement-form input,
+.announcement-form textarea,
+.announcement-form select {
+    width: 100%;
+    padding: 12px;
+    color: #343047;
+    background: #ffffff;
+    border: 1px solid #d8d2e2;
+    border-radius: 8px;
+}
+
+.announcement-form textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.announcement-form input:focus,
+.announcement-form textarea:focus,
+.announcement-form select:focus {
+    outline: 2px solid #aa3bff;
+    outline-offset: 1px;
+}
+
+/* Liste des annonces */
+.announcements-list {
+    margin-top: 36px;
+}
+
+.announcements-list > h3 {
+    margin-bottom: 20px;
+    color: #6941a5;
+}
+
+.announcements-list > button {
+    margin-bottom: 24px;
+}
+
+/* Conteneur principal de la messagerie */
+.messaging-container {
+    width: 100%;
+    min-height: calc(100vh - 70px);
+    padding: 40px 24px;
+}
+
+/* Cadre blanc principal */
+.messaging-card {
+    display: grid;
+    grid-template-columns: 320px minmax(0, 1fr);
+    width: 100%;
+    max-width: 1100px;
+    height: 650px;
+    margin: 0 auto;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e0ed;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgb(52 48 71 / 8%);
+}
+
+/* Colonne de gauche : liste des conversations */
+.conversations-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    padding: 24px;
+    border-right: 1px solid #e5e0ed;
+}
+
+.conversations-panel h1 {
+    margin: 0 0 24px;
+    color: #6941a5;
+}
+
+.conversations-panel label {
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.conversations-panel input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d8d2e2;
+    border-radius: 8px;
+}
+
+/* Liste des conversations */
+.conversations-list {
+    flex: 1;
+    margin-top: 20px;
+    overflow-y: auto;
+}
+
+.conversation-item {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 7px;
+    margin-bottom: 8px;
+    padding: 14px;
+    text-align: left;
+    color: #343047;
+    background: #ffffff;
     border: none;
-    border-radius: 5px;
+    border-radius: 10px;
     cursor: pointer;
 }
 
-.exchange-request-actions button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+.conversation-item:hover,
+.conversation-item.active {
+    background: #f7f4fb;
 }
 
+.conversation-item.active {
+    box-shadow: inset 3px 0 #6941a5;
+}
+
+.conversation-item strong {
+    color: #6941a5;
+}
+
+.conversation-item span {
+    overflow: hidden;
+    color: #6b6375;
+    font-size: 14px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.conversation-item small {
+    color: #8b8494;
+    font-size: 12px;
+}
+
+/* Colonne de droite : conversation */
+.chat-panel {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+}
+
+.chat-content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.chat-header {
+    padding: 22px 28px;
+    border-bottom: 1px solid #e5e0ed;
+}
+
+.chat-header h2 {
+    margin: 0;
+    color: #6941a5;
+}
+
+/* Zone des messages */
+.chat-messages {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 14px;
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.chat-message {
+    max-width: 75%;
+    padding: 12px 16px;
+    border-radius: 14px;
+}
+
+.chat-message p {
+    margin: 0 0 6px;
+    overflow-wrap: anywhere;
+}
+
+.chat-message small {
+    display: block;
+    color: #6b6375;
+    font-size: 11px;
+    text-align: right;
+}
+
+.chat-message.received {
+    align-self: flex-start;
+    background: #f7f4fb;
+}
+
+.chat-message.sent {
+    align-self: flex-end;
+    color: #ffffff;
+    background: #6941a5;
+}
+
+.chat-message.sent small {
+    color: #eee5fa;
+}
+
+/* Zone de rédaction */
+.chat-form {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 18px 24px;
+    border-top: 1px solid #e5e0ed;
+}
+
+.chat-form textarea {
+    flex: 1;
+    min-height: 48px;
+    max-height: 120px;
+    padding: 12px;
+    resize: vertical;
+    border: 1px solid #d8d2e2;
+    border-radius: 8px;
+}
+
+.chat-form button {
+    margin-top: 0;
+    padding: 13px 20px;
+    color: #ffffff;
+    font-weight: 600;
+    background: #6941a5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.chat-form button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+/* Messages d'information */
+.empty-chat,
+.empty-conversations {
+    color: #6b6375;
+    text-align: center;
+}
+
+/* Boutons de navigation */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar-title {
+    margin: 0;
+    color: #6941a5;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.navbar-links {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.navbar button {
+    padding: 13px;
+    color: #ffffff;
+    font-weight: 600;
+    background: #6941a5;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.navbar button:hover {
+    background: #58358e;
+}
+
+.navbar button:disabled {
+    cursor: wait;
+    opacity: 0.65;
+}
+
+/* Adaptation mobile */
+
 @media (max-width: 520px) {
+    .auth-container,
+    .profile-container,
     .announcements-container,
-    .exchange-requests-container,
-    .messaging-container,
-    .notifications-container,
-    .appointments-container {
+    .messaging-container {
         padding: 28px 16px;
     }
 
     .auth-card,
+    .profile-card,
     .announcement-card,
-    .exchange-request-card,
-    .exchange-requests-card,
-    .messaging-card,
-    .notifications-card,
-    .appointments-card,
-    .appointment-card {
-        padding: 18px;
+    .messaging-card {
+        padding: 22px;
     }
 
-    .recipient-row {
+    /* Adaptation de la messagerie */
+    .messaging-card {
+        grid-template-columns: 1fr;
+        height: auto;
+        min-height: 650px;
+    }
+
+    .conversations-panel {
+        max-height: 300px;
+        border-right: none;
+        border-bottom: 1px solid #e5e0ed;
+    }
+
+    .chat-panel {
+        min-height: 400px;
+    }
+
+    .chat-form {
         align-items: stretch;
         flex-direction: column;
+    }
+
+    .chat-form button {
+        align-self: flex-end;
     }
 }
